@@ -1,0 +1,12 @@
+.ballotItemSong{
+	background:white;
+	border-radius:20px;
+	padding:24px;
+	font-weight: bold;
+	margin:12px;
+	text-align: center;
+	cursor:pointer;
+	*{
+		user-select: none;
+	}
+}

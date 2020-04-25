@@ -1,0 +1,18 @@
+.storyboardPresentationOuterContainer{
+	.storyboardPresentationTitle{
+		font-weight:bold;
+		color:#f7f7f7;
+		font-size:24px;
+		text-align: center;
+		margin-bottom:12px;
+	}
+	.storyboardPresentationInnerContainer{
+		display: flex;
+		flex-direction: row;
+		padding: 0 20px;
+		box-shadow: border-box;
+	}
+}
+.presentationButtonContainer{
+	margin: 16px 0;
+}

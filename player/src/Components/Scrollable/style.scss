@@ -1,0 +1,21 @@
+.scrollable{
+	width:100%;
+	max-height:100vh;
+	overflow: scroll;
+
+	scroll-behavior: smooth;
+
+	.padding{
+		padding-bottom:500px;
+	}
+// background: red;
+}
+
+.scrollable::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE and Edge */
+.scrollable {
+  -ms-overflow-style: none;
+}

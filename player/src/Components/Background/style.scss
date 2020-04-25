@@ -1,0 +1,43 @@
+$height: 500px;
+$width:900px;
+
+.backgroundContainer{
+	transition:all 1s ease;
+	position: absolute;
+	top:0;
+	width:100%;
+	height:150%;
+	overflow: hidden;
+	z-index: -1;
+	.anglesContainer{
+		height:100vh;
+		width:100vw;
+		position:relative;
+		// -webkit-animation-name: spin; 
+		// -webkit-animation-duration: 100s; 
+		// animation-name: spin;
+		// animation-iteration-count:infinite;
+		// animation-timing-function: linear;
+		// animation-duration: 100s;
+		.testTriangle{
+			transform-origin: 0px 0px ;
+			position:absolute;
+			top:50%;
+			left:50%; 
+			width: 0px; 
+			height: 0px; 
+			border-top:200vw solid transparent;
+			border-bottom: 0px solid transparent; 
+			border-right:325vw solid rgba(255,255,255,0.2);
+		}
+	}
+}
+
+@-webkit-keyframes spin {
+  0% {transform: rotate(0deg)}
+  100% {transform: rotate(360deg)}
+}
+@keyframes spin {
+  0% {transform: rotate(0deg)}
+  100% {transform: rotate(360deg)}
+}

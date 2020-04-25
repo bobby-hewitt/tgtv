@@ -1,0 +1,26 @@
+.ballotItem{
+	display: flex;
+	flex-direction: row;
+	align-items:center; 
+	justify-content: center;
+	background:white;
+	border-radius:20px;
+	padding:24px;
+	font-weight: bold;
+	margin:12px;
+	text-align: center;
+	cursor:pointer;
+
+	p{
+		display: flex;
+		flex:10;
+	}
+	*{
+		user-select: none;
+	}
+	img{
+		width:30px;
+		display: flex;
+		flex:1;
+	}
+}
