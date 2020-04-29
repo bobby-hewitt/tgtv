@@ -19,7 +19,7 @@ import {
 } from '../Components'
 import Lint from '../Helpers/Linting'
 import SearchGameController from './Search/SearchGameController'
-import SongGameController from './Song/SongGameController'
+import SongSocket from './Song/SongSocket'
 import MovieGameController from './Movie/MovieGameController'
 import LandingPage from './LandingPage'
 import globalContext from '../Context/global'
@@ -51,7 +51,7 @@ const AppController = () =>  {
   const globalState= useContext(globalContext)
   useEffect(() => {
     loadSounds().then(() => {
-       playBackgroundMusic()
+       // playBackgroundMusic()
 
     })
     return () => {
@@ -99,7 +99,7 @@ const AppController = () =>  {
           <SearchGameController stopBackgroundMusic={stopBackgroundMusic}/>
         }
         {globalState.activeGame === 'song' &&
-          <SongGameController stopBackgroundMusic={stopBackgroundMusic}/>
+          <SongSocket stopBackgroundMusic={stopBackgroundMusic}/>
         }
         {globalState.activeGame === 'movie' &&
           <MovieGameController stopBackgroundMusic={stopBackgroundMusic}/>

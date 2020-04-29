@@ -36,7 +36,7 @@ exports.hostConnected = function(socket, game){
 	}
 	function createRoom(){
 		Rooms.create({short: code, long: socket.id, game}, (err, room)=> {
-			console.log('generated, ', room)
+			console.log('host connected')
 			socket.emit('host-room-generated', room)
 		})
 	}
@@ -50,9 +50,9 @@ exports.hostConnected = function(socket, game){
 
 
 exports.playerConnected = function(socket, playerData){
-	console.log('player connected', playerData)
+	console.log('player connected')
 	Rooms.findOne({short: playerData.room}, function(err, result){
-		console.log('result', result)
+		
 		if (err){	
 			console.log('err')
 			return socket.emit('error-joining', "Oops, something went wrong.")
@@ -73,16 +73,25 @@ exports.playerConnected = function(socket, playerData){
 exports.playerJoinedRoom = function(io, socket, playerData){
 	playerData.roomid = socket.id 
 	socket.to(playerData.id).emit('success-joining', playerData)
-	io.sockets.connected[playerData.id].join(socket.id);
-	if (playerData.allowStartGame){
-		socket.broadcast.to(socket.id).emit('min-players-reached')
+	if (io.sockets.connected[playerData.id]){
+		io.sockets.connected[playerData.id].join(socket.id);
+		if (playerData.allowStartGame){
+			socket.broadcast.to(socket.id).emit('min-players-reached')
+		}
 	}
 }
 
 exports.playerRejoinedRoom = function(io, socket, playerData){
 	playerData.roomid = socket.id 
-	socket.to(playerData.id).emit('success-rejoining', playerData)
-	io.sockets.connected[playerData.id].join(socket.id);
+	console.log('rejoining', playerData)
+	
+	if (io.sockets.connected[playerData.id]){
+		socket.to(playerData.id).emit('success-rejoining', playerData)
+		io.sockets.connected[playerData.id].join(socket.id);
+	} else {
+		socket.to(playerData.id).emit('error-joining')
+	}
+	
 }
 
 exports.roomFull = function (socket, playerData){

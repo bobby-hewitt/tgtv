@@ -9,6 +9,13 @@ exports.sendCategories = (socket, data) => {
 	})
 } 
 
+exports.sendCategoriesPlayer = (socket, data) => {
+	Spotify.categories().then((categories) => {
+		console.log('got cats', categories.length)
+		socket.emit('choose-category-player', categories)
+	})
+} 
+
 exports.sendPlaylists = (socket, data) => {
 	console.log('lookin', data, socket.id)
 	Spotify.playlists(data).then((playlists) => {
@@ -24,7 +31,7 @@ exports.sendTracks = (socket, data) => {
 	.then((tracks) => {
 		const response = {
 			tracks,
-			player:data.me,
+			player:data.player,
 			image: data.image,
 			playlistName: data.name
 

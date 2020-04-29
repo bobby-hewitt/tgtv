@@ -6,7 +6,7 @@ import './style.scss'
 
 const Playlist = (props) => {
 	const state = useContext(globalContext)
-	console.log('category',props)
+	
 
 
 

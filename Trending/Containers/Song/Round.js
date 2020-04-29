@@ -15,10 +15,11 @@ import { Track } from '../../Components/Song'
 import {startSpeech} from '../../Helpers/TTS'
 
 
-const Round = ({question, trackIndex, round, toRoom,players, nextTrack,config, gameState, sendResponses}) => {
+const Round = ({question, trackIndex, round, toRoom,players, setGameState, nextTrack,config, gameState, sendResponses}) => {
 	
 	useEffect(() => {
-		startSpeech('songs-playlist', {round: round + 1, name: question.playlistName}, () => {
+		console.log('question', question)
+		startSpeech('songs-playlist', {round: round + 1, player: question.player ? question.player.name : false, name: question.playlistName}, () => {
 			nextTrack()
 		})
 	}, [])
@@ -26,11 +27,9 @@ const Round = ({question, trackIndex, round, toRoom,players, nextTrack,config, g
 		<View>
 			{trackIndex === -1 && 
 				<Scale duration={500} fillContainer scaleTo={1}>
-				<View style={[styles.imageContainer ]}>
-				
-					<Image style={styles.image}source={{uri: question.image}} />
-				
-				</View>
+					<View style={[styles.imageContainer ]}>
+						<Image style={styles.image}source={{uri: question.image}} />
+					</View>
 				</Scale>
 				
 				
@@ -40,7 +39,7 @@ const Round = ({question, trackIndex, round, toRoom,players, nextTrack,config, g
 				if(i === trackIndex && trackIndex >= 0 && trackIndex < config.maxTracks){
 					return(
 						<Scale key={i} duration={500} fillContainer scaleTo={1}>
-						<Track  toRoom={toRoom} {...item} gameState={gameState} sendResponses={sendResponses} nextTrack={nextTrack} votes={question.tracks[trackIndex].votes} votesLength={question.tracks[trackIndex].votes.length} playersLength={players.length}/>
+						<Track  toRoom={toRoom} {...item} setGameState={setGameState } gameState={gameState} sendResponses={sendResponses} nextTrack={nextTrack} votes={question.tracks[trackIndex].votes} votesLength={question.tracks[trackIndex].votes.length} playersLength={players.length}/>
 						</Scale>
 					)
 				}

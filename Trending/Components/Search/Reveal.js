@@ -40,10 +40,11 @@ const RevealOption = ({votes, responses, index, createPlayersText, callback, isT
 
 	function createResultText(){
 		return responses[index] ? 
+			responses[index].isTrue ? 'The truth!' : 
 			responses[index].player ? 
 				createPlayersText(responses[index]) + "'s Lie" : 
 				responses[index].ourLie ? "Our lie" : 
-				responses[index].isTrue ? 'The truth!' : 
+				
 			' ':
 		' '
 

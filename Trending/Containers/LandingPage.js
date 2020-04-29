@@ -8,36 +8,19 @@ import {
   Text,
   Dimensions,
   TVEventHandler,
+  Image,
   FlatList,
 } from 'react-native';
 import {
   CTA, 
   Background, 
-  Screen
+  Screen,
+  Scale
 } from '../Components'
 import { startSpeech } from '../Helpers/TTS.js'
 import globalContext from '../Context/global'
-
-const actions = [
-  {
-    "label": "Webheads",
-    backgroundColor: '#4285F4',
-    value: 'search'
-  },
-  {
-    "label": "Giffty",
-    backgroundColor: '#04011f',
-    value: 'movie'
-  },
-
-  {
-    "label": "Spot it DJ",
-    backgroundColor: '#1DB954',
-    value:'song'
-
-  },
-  
-]
+import gs from '../Styles'
+import actions from '../Data/games'
 
 
 
@@ -48,6 +31,8 @@ const LandingPage = () =>  {
   const globalState= useContext(globalContext)
   const [activeIndex, setActiveIndex] = useState(0) 
   const marginTop = useRef(new Animated.Value(0)).current
+  const rotateXValue = useRef(new Animated.Value(0)).current
+   const rotateZValue = useRef(new Animated.Value(0)).current
   const marginRight = useRef(new Animated.Value(0)).current
   const marginLeft = useRef(new Animated.Value(0)).current
 
@@ -95,19 +80,43 @@ const LandingPage = () =>  {
   
 
   useEffect(() => {
-    Animated.timing(marginTop, {
-      toValue: Dimensions.get('window').height * activeIndex - (Dimensions.get('window').height * 2) ,
+    Animated.sequence([
+      Animated.timing(marginTop, {
+        toValue: -activeIndex * 550 ,
+        useNativeDriver:true,
+        duration: 250,    
+      }),
+      Animated.timing(rotateXValue, {
+        toValue: actions[activeIndex].armRotateX ,
+        useNativeDriver:true,
+        duration: 250,    
+      }),
+      Animated.timing(rotateZValue, {
+        toValue: actions[activeIndex].armRotateZ ,
+        useNativeDriver:true,
+        duration: 250,    
+      }),
 
-      duration: 250,    
-    }).start();
+    ]).start();
   }, [activeIndex]);
 
-  
+  const rotateX = rotateXValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '180deg']
+  })
+  const rotateZ = rotateZValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '180deg']
+  })
  
   return (
     
         <View style={styles.row}>
           <Animated.View style={[styles.actionsContainer, {transform: [{translateX: marginLeft}]}]}>
+            <View style={{width:'100%', alignItems:'center'}}>
+            <Image source={require('../assets/images/logo.png')} style={styles.logo} />
+            </View>
+            
             {actions.map((item, i) => {
               return(
                 <CTA 
@@ -125,18 +134,39 @@ const LandingPage = () =>  {
             })}
           </Animated.View>
           <Animated.View style={[styles.rightContainer, {transform: [{translateX: marginRight}]}]}>
-          <Animated.View style={[{flexDirection:'column',marginTop: marginTop}]}>
+          
            <View style={styles.previewContainer}>
-            <Screen color={globalState.backgroundColor}/> 
+            <Screen color={globalState.backgroundColor}>
+            <View style={{width:979, height:550, overflow:'hidden'}}>
+              <Animated.View  style={[styles.screenInnerContainer, {transform:[{translateY: marginTop}]}]}>
+                {actions.map((item, i) => {
+                return(
+                  <View key={i} >
+                    <Image source={item.backgroundImage} style={styles.backgroundImage} />
+                  </View>
+                )
+              })}
+              </Animated.View>
+              <View style={styles.overlay} />
+              </View>
+              <Animated.Image source={require('../assets/images/home/arm.png')} style={[styles.armImage, {transform: [{rotateX},{rotateZ: rotateZ}]}]} />
+            <Image source={require('../assets/images/home/guru.png')} style={styles.guruImage} />
+            <View style={styles.magnifyingGlass} >
+            <Scale fillContainer duration={actions[activeIndex].value === 'search' ? 300 : 100}scaleTo={actions[activeIndex].value === 'search' ? 1 : 0}>
+              <Image source={require('../assets/images/home/magnifyingGlass3.png')} />
+            </Scale>
+           
+
+            </View>
+            </Screen> 
            </View>
-            <View style={styles.previewContainer}>
-            <Screen color={globalState.backgroundColor}/> 
+           <View style={styles.overview}>
+          <Text style={[gs.bodycopy, {textAlign:'left'}]}>{actions[activeIndex].description} <Text style={[gs.bodycopy, gs.bold, {textAlign:'left'}]}>{actions[activeIndex].players} players</Text></Text>
+          
            </View>
-            <View style={styles.previewContainer}>
-            <Screen color={globalState.backgroundColor}/> 
-           </View>
+          
           </Animated.View>
-          </Animated.View>
+
         </View> 
     
   );
@@ -151,16 +181,66 @@ const LandingPage = () =>  {
 
 
 const styles = StyleSheet.create({
+  screenInnerContainer:{
+    width:3000,
+    height:550,
+    flexDirection:'column',
+    
+
+
+  },
+  overview:{
+    // backgroundColor:"red",
+
+    marginLeft:100,
+    flex:1,
+    alignItems:'flex-start',
+    justifyContent:'flex-end',
+    
+    bottom:Dimensions.get('window').height/7,
+  },
+ 
+  armImage:{
+    position:'absolute',
+    bottom:80,
+    left:600,
+    zIndex:100,
+  },
+   guruImage:{
+    position:'absolute',
+    bottom:0,
+    left:0,
+    zIndex:200,
+  },
+   magnifyingGlass:{
+    position:'absolute',
+    bottom:305,
+    left:335,
+    zIndex:500,
+  }, 
+  backgroundImage:{
+
+    width:979,
+    height:550,
+  },
   container: {
     
   },
   previewContainer:{
 
-    height:Dimensions.get('window').height,
+    // height:Dimensions.get('window').height,
   },
   row:{
     flexDirection:'row',
    
+  },
+  logo:{
+    marginLeft:-60,
+    width:600,
+    height:170,
+    marginBottom:40,
+    marginTop:-40,
+
   },
   rightContainer:{
     flex:1,
@@ -169,8 +249,20 @@ const styles = StyleSheet.create({
     
     height:Dimensions.get('window').height,
   },
+  overlay:{
+    position:'absolute',
+    top:0,
+    left:0,
+    bottom:0,
+    right:0,
+    backgroundColor:'rgba(0,0,0,0.35)'
+  },
   actionsContainer:{
-    flex:0.5,
+    // backgroundColor:'red',
+    // position:'absolute',
+    // bottom:Dimensions.get('window').height * 0.1,
+    // left:0,
+    flexDirection:'column',
     height:Dimensions.get('window').height * 0.9,
     justifyContent:'center',
   }

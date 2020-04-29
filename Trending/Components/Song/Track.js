@@ -4,13 +4,14 @@ import {
 } from 'react-native'
 import gs from '../../Styles'
 import { playRemoteSound, stopRemoteSound } from '../../Helpers/Sound'
-import { Scale, Timer } from '../Global'
+import { Scale, Timer, Translate } from '../Global'
 import globalContext from '../../Context/global'
-const Track = ({image_url, preview_url, toRoom, sendResponses, gameState, artist, nextTrack, votesLength, playersLength, votes, name, responses, artistResponses, nameResponses}) => {
+const Track = ({image_url, preview_url, toRoom, setGameState, sendResponses, gameState, artist, nextTrack, votesLength, playersLength, votes, name, responses, artistResponses, nameResponses}) => {
 	const [ showVotes, setShowVotes ] = useState(false)
 	const [ showAnswer, setShowAnswer ] = useState(false)
 	const [ fadeOut, setFadeout ] = useState(false)
 	const translateX = useRef(new Animated.Value(0)).current
+	const voteMargin = useRef(new Animated.Value(24)).current
 	const translateY = useRef(new Animated.Value(0)).current
 
 
@@ -32,9 +33,7 @@ const Track = ({image_url, preview_url, toRoom, sendResponses, gameState, artist
 	useEffect(() => {
 		
 		if (votes.length >=  playersLength){
-			
-			stopRemoteSound()
-			setShowVotes(true)
+			votesOver()
 		}
 	}, [
 		votes,
@@ -46,8 +45,8 @@ const Track = ({image_url, preview_url, toRoom, sendResponses, gameState, artist
 		let to = 
 			trueIndex=== 0 ? {x: 415, y:250} : 
 			trueIndex=== 1 ? {x: -450, y:250} : 
-			trueIndex=== 2 ? {x: 415, y:-240} : 
-			{x: -450, y:-240} 
+			trueIndex=== 2 ? {x: 415, y:-205} : 
+			{x: -450, y:-205} 
 		Animated.parallel([
 			Animated.timing(translateX, {
 		        toValue: to.x,
@@ -57,6 +56,11 @@ const Track = ({image_url, preview_url, toRoom, sendResponses, gameState, artist
 			Animated.timing(translateY, {
 		        toValue: to.y,
 		        useNativeDriver: true,
+		        duration: 500,    
+		      }),
+			Animated.timing(voteMargin, {
+		        toValue: 100,
+		        
 		        duration: 500,    
 		      })
 		]).start()
@@ -82,11 +86,15 @@ const Track = ({image_url, preview_url, toRoom, sendResponses, gameState, artist
 		}
 	}
 
-	function timeUp(){
+	function votesOver(){
+		setGameState('reveal')
 		toRoom({action:'set-waiting'})
 		stopRemoteSound()
-			setShowVotes(true)
+		setShowVotes(true)
 	}
+
+
+
 
 	
 
@@ -101,8 +109,8 @@ const Track = ({image_url, preview_url, toRoom, sendResponses, gameState, artist
 					<Scale  scaleFrom={1} fillContainer scaleTo={showAnswer ? fadeOut ? 0 : item.isTrue ? 1 : 0 : 1} duration={500} animationComplete={() => correctAnimationComplete(item)}>
 					<View style={[styles.responseInnerContainer, {transform: [{rotate: i % 2 === 0 ? -0.05 : 0.05}]}]}>
 					
-						<Text  style={[gs.bodycopy, gs.bold, {textAlign:'center', color:'#101010'}]}>{item.name}</Text>
-						<Text  style={[gs.bodycopy, gs.bold, {textAlign:'center', color:'#101010', marginTop:24}]}>{item.artist}</Text>
+						<Text  style={[gs.bodycopy, gs.bold, {fontSize:40, textAlign:'center', color:'#101010'}]}>{item.name}</Text>
+						<Text  style={[gs.bodycopy, gs.bold, {fontSize:40, textAlign:'center', color:'#101010', marginTop:24}]}>{item.artist}</Text>
 					</View>
 					{showVotes &&
 							<Scale duration={500} scaleTo={1} animationComplete={votesAnimationComplete}>
@@ -112,17 +120,18 @@ const Track = ({image_url, preview_url, toRoom, sendResponses, gameState, artist
 										
 										return(
 											<View key={`${i}${j}`} style={styles.voteOuterContainer}>
-											<View style={styles.voteContainer}>
+											<Animated.View style={[item.isTrue ? {marginTop:voteMargin} : {marginTop:24}, styles.voteContainer]}>
 												<Text style={[gs.bodycopy, gs.bold, {fontSize:32, fontWeight:'bold', color:'#101010'}]}>{vote.player.name} </Text>
-												
-											</View>
+											</Animated.View>
 												{item.isTrue && showAnswer &&
 												<View style={styles.scoreContainerPosition}>
+												
 												<Scale scaleTo={1} delay={500}fillContainer>
 													<View style={styles.scoreContainer}>
 														<Text style={styles.scoreText}>{'+' +(100 - Math.floor(vote.time / 100))}</Text>
 													</View>
 												</Scale>
+												
 												</View>
 												
 												}
@@ -145,7 +154,7 @@ const Track = ({image_url, preview_url, toRoom, sendResponses, gameState, artist
 			
 			}
 			{!showVotes &&
-				<Timer backgroundColor={'#1DB954'}  inverse duration={10} onComplete={timeUp}/>
+				<Timer backgroundColor={'#1DB954'}  inverse duration={10} onComplete={votesOver}/>
 			}
 		</View>
 	)
@@ -153,27 +162,33 @@ const Track = ({image_url, preview_url, toRoom, sendResponses, gameState, artist
 
 const styles= StyleSheet.create({
 	outerContainer:{
+		paddingTop:50,
+		paddingBottom:150,
 		flex:1,
 		width: Dimensions.get('window').width - (Dimensions.get('window').width/10),
 		flexDirection:'row',
 		flexWrap:'wrap'
 	},
 	scoreContainer:{
-		width:60,
-		borderRadius:30,
-		height:60,
+		width:80,
+		borderRadius:50,
+		height:80,
 		alignItems:"center",
 		justifyContent:'center',
-		backgroundColor:'#000'
+		
 	},
 	scoreContainerPosition:{
 		position:'absolute',
-		top:-30,
-		right:0,
+		top:20,
+		left:'50%',
+		transform:[
+			{translateX:'-50%'}
+		]
+		
 	},
 	scoreText:{
 		fontWeight:'bold',
-		fontSize:24,
+		fontSize:40,
 		color:'#fff',
 	},
 	responseContainer:{
@@ -181,6 +196,7 @@ const styles= StyleSheet.create({
 		width:'50%',
 		padding:50,
 		height:'50%',
+		marginBottom:60,
 	},
 	responseInnerContainer:{
 		position:'relative',
@@ -196,11 +212,13 @@ const styles= StyleSheet.create({
 		backgroundColor:'#fff',
 	},
 	votesContainer:{
-		width:'100%',
+		width:'120%',
+		marginLeft:'-10%',
+		marginTop:-24,
 		// backgroundColor:'#ff000077',
 
 		position:'absolute',
-		bottom:-84,
+		top:'100%',
 		left:0,
 		zIndex:100,
 		
@@ -214,8 +232,8 @@ const styles= StyleSheet.create({
 	},
 	voteContainer:{
 		
-		marginBottom:24,
-		height:60,
+		
+		height:48,
 		marginRight:24,
 		backgroundColor:'#fff',
 		borderRadius:50,
@@ -223,7 +241,7 @@ const styles= StyleSheet.create({
 	    shadowOffset: { width: 0, height: 0 },
 	    shadowOpacity: 0.4,
 	    shadowRadius: 20,
-	    paddingVertical:9,
+	    paddingVertical:4,
 		paddingLeft:32,
 		paddingRight:20,
 		alignItems:'center',

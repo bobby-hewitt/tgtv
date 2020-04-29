@@ -46,10 +46,13 @@ exports.submitSuggestion = (socket, data) => {
 		let newResponses = []
 		for (var i = 0 ; i < arr.length; i++){
 			let r = arr[i].displayText
-			r= r.replace(q.trim(), '')
-			console.log(r)
-			if (r && r.length){
-				newResponses.push(r)
+			console.log('in cleaning')
+			if (r.indexOf(q.trim()) > -1){
+				console.log('in the same')
+				r= r.replace(q.trim(), '')
+				if (r && r.length){
+					newResponses.push(r)
+				}
 			}
 		}
 		return newResponses
@@ -74,18 +77,22 @@ exports.submitSuggestion = (socket, data) => {
 		let response = JSON.parse(res)
 		let q = response.queryContext.originalQuery
 		let arr = response.suggestionGroups[0].searchSuggestions
-		if (!arr.length) return 
+		if (!arr.length)  return socket.emit('search-suggestion-error', data.suggestion)
 		const responses = cleanResponses(arr, q)
-		const questionData = {
-			q,
-			a: responses,
-			responses: [],
-			votes: [],
-			player: data.player
+		if (responses.length){
+			const questionData = {
+				q,
+				a: responses,
+				responses: [],
+				votes: [],
+				player: data.player
 
+			}
+			
+			socket.to(data.room).emit('submit-suggestion', questionData)
+		} else {
+			socket.emit('search-suggestion-error', data.suggestion)
 		}
-		console.log(questionData)
-		socket.to(data.room).emit('submit-suggestion', questionData)
 	})
 	.catch((err) => {
 		console.log('ERR', err)

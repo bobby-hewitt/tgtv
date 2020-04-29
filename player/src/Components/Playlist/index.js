@@ -6,7 +6,7 @@ import './style.scss'
 
 const Playlist = (props) => {
 	const state = useContext(globalContext)
-	console.log(props)
+
 	return (
 		<div className={`PlaylistOuterContainer `}>
 			<div onClick={() => {

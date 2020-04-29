@@ -9,7 +9,15 @@ const Home = (props) => {
 	const state = useContext(globalContext)
 	const [ search , setSearch ] = useState('')
 
-	console.log('songCaetegory,', state.songCategories)
+	useEffect(() => {
+		if (!state.songCategories){
+			console.log("EMITTING")
+			state.getSongCategories()
+		}
+		return () => {
+			return
+		}
+	},[])
 
 	function getPlaylists(e){
 		if (e) e.persist()
@@ -40,7 +48,7 @@ const Home = (props) => {
 						})}
 					</Scrollable>
 				}
-				{state.playlists && 
+				{state.playlists && state.songCategories &&
 					<Scrollable>
 					<SongCategory {...state.songCategories[0]} name="Back to categories" onClick={() => state.setPlaylists(false)}/>
 					{state.playlists.length > 0 && state.playlists.map((item, i) => {

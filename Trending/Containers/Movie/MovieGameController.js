@@ -17,7 +17,7 @@ import {
 } from 'react-native';
 import { Provider } from "../../Context/search";
 import { Join, Instructions, SubmitSuggestions, Scores } from '../../Containers/Global'
-import { Players, RoomCode, Screen } from '../../Components/Global'
+import { Players, RoomCode, Screen, RoomCodeIndicator } from '../../Components/Global'
 import Headshots from './Headshots'
 import Presentation from './Presentation'
 import Reviews from './Reviews'
@@ -481,8 +481,11 @@ const Movie = (props) =>  {
       }}
     >     
       <View style={[styles.container]}> 
+        {gameState !== 'join' &&
+          <RoomCodeIndicator roomCode={room}/>
+        } 
         {(gameState === 'join' || gameState === 'instructions') &&
-          <Join />
+          <Join guruImage={require('../../assets/images/fullGuruRed.png')}/>
         }
     
         {gameState === 'instructions' &&

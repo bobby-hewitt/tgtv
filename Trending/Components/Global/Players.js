@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
 		fontSize:30,
 	},
 	playersContainer:{		
-		flex:0.5,
+		flex:0.42,
 		
 		overflow:'hidden',
 		flexDirection:'column',

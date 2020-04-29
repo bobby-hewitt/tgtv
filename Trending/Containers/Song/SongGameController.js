@@ -2,6 +2,7 @@
 import openSocket from 'socket.io-client'
 import React, {useEffect, useRef, useState, useContext} from 'react';
 import useSocket from 'use-socket.io-client';
+import io from 'socket.io-client'
 import {startSpeech } from '../../Helpers/TTS'
 import {GLOBAL_playerJoined } from '../../Helpers/global'
 import {playSound, clearRemoteSound } from '../../Helpers/Sound'
@@ -15,7 +16,7 @@ import {
 } from 'react-native';
 import { Provider } from "../../Context/search";
 import { Join, Instructions, SubmitSuggestions, Scores, } from '../../Containers/Global'
-import { Players, RoomCode } from '../../Components/Global'
+import { Players, RoomCode, RoomCodeIndicator } from '../../Components/Global'
 
 import globalContext from '../../Context/global'
 import Round from './Round'
@@ -29,12 +30,11 @@ const config = {
 
 
 
-
-const SongGameController = (props) =>  {
+const SongGameController = ({socket, stopBackgroundMusic}) =>  {
   // const { socket } = useContext(globalContext)
-  const [socket] = useSocket('http://192.168.0.2:9000',{
-    autoConnect: false, forceNode: true
-  })
+  // const [socket] = useSocket('http://192.168.0.2:9000',{
+  //   autoConnect: true, forceNode: true
+  // })
   
   
   const globalState = useContext(globalContext)
@@ -47,13 +47,13 @@ const SongGameController = (props) =>  {
   const [ round, setRound] = useState(0)
   const [ trackIndex, setTrackIndex] = useState(-1)
   useEffect(() => {
-    socket.connect()
-    console.log('HOST JOINING')
+    
+    // console.log('HOST JOINING')
     socket.emit('host-joined', 'search')
-    return () => {
-      console.log('HOST LEAVING')
-      socket.disconnect()
-    }
+    // return () => {
+    //   console.log('HOST LEAVING')
+    //   socket.disconnect()
+    // }
   },[])
  
   useEffect(() => {
@@ -105,7 +105,7 @@ const SongGameController = (props) =>  {
 
   function startGame(){
     globalState.setBackgroundPosition('center')
-    props.stopBackgroundMusic()
+    stopBackgroundMusic()
     setGameState('instructions')
     
   }
@@ -161,8 +161,32 @@ const SongGameController = (props) =>  {
   }
 
 
-  function rejoin(index, data){
-    console.log('rejoining')
+ function rejoin(index, data){
+    if (gameState === 'submitSuggestions'){
+      data.rejoinAt = 'song-suggestions'
+    } else if (gameState === 'round'){
+      //check if player has submitted answer 
+      let hasVoted = questions[round].tracks[trackIndex].votes.find(v => v.player.name === data.name)
+      if (hasVoted){
+        console.log('HAS VOTED', hasVoted, data,name)
+        data.rejoinAt = 'waiting'
+      } else {
+        data.rejoinData = questions[round].tracks[trackIndex].responses
+        
+        data.rejoinAt = 'song-options'
+      }
+    } else if (gameState === 'end'){
+      data.rejoinAt = 'end'
+    } else {
+      //waiting
+      data.rejoinAt ='waiting'
+    }
+
+    data.action = 'success-rejoining'
+    
+    data.player = data.id
+    socket.emit('success-rejoining', data)
+    
     
     // socket.emit('success-rejoining', data)
   }
@@ -229,15 +253,26 @@ const SongGameController = (props) =>  {
   }
 
   function nextTrack(){
-    console.log('NEXT TRACK', trackIndex, questions[round].tracks.length-1)
     if (trackIndex < questions[round].tracks.length-1){
+      setGameState('round')
        setTrackIndex(trackIndex + 1)
      } else {
-
       updateScores()
-      setTrackIndex(-1)
+      
       clearRemoteSound()
-      setGameState('scores')
+      if (round < questions.length-1){
+        startSpeech('score-time', {}, () => {
+          setTrackIndex(-1)
+          setGameState('scores')
+        })  
+      } else {
+        startSpeech('final-scores', {}, () => {
+          setTrackIndex(-1)
+          setGameState('scores')
+        })
+      }
+      
+      
      }
   }
 
@@ -281,11 +316,14 @@ const SongGameController = (props) =>  {
   
 
 
-  function endOfGame(){
-    setGameState('end')
-    toRoom({
-      action:'on-end'
+  function endOfGame(winner){
+    startSpeech('end-of-game', {winner}, () => {
+      setGameState('end')
+      toRoom({
+        action:'on-end'
+      })
     })
+    
   }
 
   function mergeRoundScore(){
@@ -306,6 +344,7 @@ const SongGameController = (props) =>  {
 
 
 
+
   return (
     <Provider
       value={{
@@ -320,8 +359,11 @@ const SongGameController = (props) =>  {
       }}
     >     
       <View style={[styles.container]}> 
+
+          
+      
         {(gameState === 'join' || gameState === 'instructions') &&
-          <Join />
+          <Join guruImage={require('../../assets/images/fullGuruRed.png')}/>
         }
     
         {gameState === 'instructions' &&
@@ -330,8 +372,8 @@ const SongGameController = (props) =>  {
         {gameState === 'submitSuggestions' &&
           <SubmitSuggestions questions={questions.length} limit={config.maxSuggestions}/>
         }
-        {gameState === 'round' &&
-          <Round round={round} toRoom={toRoom} config={config} gameState={gameState}nextTrack={nextTrack} players={players}sendResponses={sendResponses} question={questions[round]} trackIndex={trackIndex}/>
+        {(gameState === 'round' ||gameState === 'reveal') &&
+          <Round round={round} toRoom={toRoom}  setGameState={(n) => setGameState(n)}config={config} gameState={gameState}nextTrack={nextTrack} players={players}sendResponses={sendResponses} question={questions[round]} trackIndex={trackIndex}/>
         }
         {(gameState === 'scores' || gameState === 'scores-updated' || gameState === 'end') &&
           <Scores 
@@ -346,6 +388,9 @@ const SongGameController = (props) =>  {
             players={players}
           />
         }
+        {gameState !== 'join' &&
+          <RoomCodeIndicator roomCode={room}/>
+        } 
       </View>
     </Provider>
   );

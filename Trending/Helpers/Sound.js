@@ -7,10 +7,12 @@ let sounds = {};
 
 export const loadSounds = () => {
   return new Promise((resolve, reject) => {
-    let err = false
     sounds.background = new Sound('background.mp3', Sound.MAIN_BUNDLE, (success) => {
       sounds.background.setNumberOfLoops(-1);
-      // resolve()
+      if (success){
+      
+      sounds.background.play()
+      }
     })
     sounds.thud = new Sound('thud.wav', Sound.MAIN_BUNDLE)
     sounds.tada = new Sound('tada.wav', Sound.MAIN_BUNDLE)

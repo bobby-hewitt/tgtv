@@ -170,7 +170,8 @@ const Scores = ({players, mergeRoundScore, game, isEnd, scoresComplete, backgrou
 			mergeRoundScore()
 			timeout2 = setTimeout(() => {
 				if (isEnd){
-					endOfGame()
+
+					endOfGame(orderedPlayers[0].name)
 				} else {
 					setScale(0)
 				}

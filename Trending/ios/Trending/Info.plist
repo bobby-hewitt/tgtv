@@ -56,6 +56,7 @@
 	<key>UIAppFonts</key>
 	<array>
 		<string>chunk.ttf</string>
+		<string>impact.ttf</string>
 	</array>
 </dict>
 </plist>

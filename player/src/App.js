@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Provider } from "./Contexts/global";
 import {useRoutes, navigate} from 'hookrouter';
-import { Join, NotFound, WaitingStart, Waiting, CreateHeadShot, MovieReview, ReviewVote, MoviePresentation, CreateStoryBoard, SearchSuggestions, ChooseStar, MovieSuggestions, ChooseTitle, TextAnswerInput, Vote, End, SongSuggestions, SongOptions, Drawing} from 'Containers'
+import { Join, NotFound, WaitingStart, Waiting, Bullseye, CreateHeadShot, MovieReview, ReviewVote, MoviePresentation, CreateStoryBoard, SearchSuggestions, ChooseStar, MovieSuggestions, ChooseTitle, TextAnswerInput, Vote, End, SongSuggestions, SongOptions, Drawing} from 'Containers'
 import { Background, Notification } from 'Components'
 import openSocket from 'socket.io-client'
 import './App.scss'
@@ -18,6 +18,7 @@ const routes = {
     '/waiting-start': () => <WaitingStart />,
     '/waiting': () => <Waiting />,
     '/search-suggestions': () => <SearchSuggestions />,
+    '/bullseye': () => <Bullseye />,
     '/text-answer-input': () => <TextAnswerInput />,
     '/vote': () => <Vote />,
     '/review-vote': () => <ReviewVote />,
@@ -27,8 +28,11 @@ const routes = {
     '/drawing': ()=> <Drawing />,
 };
 
-const socket = openSocket('http://192.168.0.2:9000')
-console.warn('NEW SOCKET')
+const socket = openSocket('http://192.168.0.2:9000', {forceNew:true})
+
+
+
+
 const App = props => {
 
   
@@ -44,12 +48,9 @@ const App = props => {
   const [ presentation, setPresentation ]= useState(false)
   const [ popup, setPopup ]= useState(false)
 
+ 
   useEffect(() => {
-    if (window.location.pathname.length > 1){
-      navigate('/')
-    }
-  },[])
-  useEffect(() => {
+    socket.on('connect', socketConnection);
     socket.on('error-joining', errorJoining)
     socket.on('success-joining', successJoining)
     socket.on('host-disconnected', hostDisconnected)
@@ -63,6 +64,7 @@ const App = props => {
     socket.on('on-end', onEnd)
     socket.on('choose-playlist', choosePlaylist)
     socket.on('choose-category', chooseCategory)
+    socket.on('choose-category-player', chooseCategoryPlayer)
     socket.on('playlist-suggestion-failed', playlistSuggestionFailed)
     socket.on('song-options', songOptions)
     socket.on('send-story-board', sendStoryBoard)
@@ -73,7 +75,9 @@ const App = props => {
     socket.on('send-presentation', sendPresentation)
     socket.on('send-movie-review', sendMovieReview)
     socket.on('vote-on-review', voteOnReview)
+    socket.on('search-suggestion-error', searchSuggestionError)
     return  () => {
+      socket.removeListener('connect', socketConnection);
       socket.removeListener('error-joining', errorJoining)
       socket.removeListener('success-joining', successJoining)
       socket.removeListener('host-disconnected', hostDisconnected)
@@ -87,6 +91,7 @@ const App = props => {
       socket.removeListener('on-end', onEnd)
       socket.removeListener('choose-playlist', choosePlaylist)
       socket.removeListener('choose-category', chooseCategory)
+      socket.removeListener('choose-category-player', chooseCategoryPlayer)
       socket.removeListener('playlist-suggestion-failed', playlistSuggestionFailed)
       socket.removeListener('song-options', songOptions)
       socket.removeListener('send-story-board', sendStoryBoard)
@@ -97,8 +102,54 @@ const App = props => {
       socket.removeListener('send-presentation', sendPresentation)
       socket.removeListener('send-movie-review', sendMovieReview)
       socket.removeListener('vote-on-review', voteOnReview)
+      socket.removeListener('search-suggestion-error', searchSuggestionError)
     }
   })
+
+   useEffect(() => {
+    if (window.location.pathname.length > 1){
+      navigate('/')
+    }
+    if (!socket.id){
+      console.log("NO ID")
+      socketConnection(true)
+    }
+  },[])
+
+  function socketConnection(fromNoId){
+    if (!fromNoId){
+      console.log("SCOKET CONNECTION CB", socket.id)
+    }
+    if(window.localStorage.tgme){
+        const me = JSON.parse(window.localStorage.tgme)
+        console.log('RECONNECTING', socket)
+        const rejoinData = {
+          name: me.name,
+          room:me.room,
+          id:socket.id
+        }
+        socket.emit('player-joined', rejoinData)
+        console.log(rejoinData)
+      }
+  }
+
+  function searchSuggestionError(data){
+     setPopup({
+     title: "Couldn't use that one",
+       subtitle: data,
+       actions: [
+         {
+           label: 'Ok',
+           action: () => setPopup(false),
+         }
+       ]
+   })
+  }
+
+  function chooseCategoryPlayer(data){
+    console.log('got cats', data)
+    setSongCategories(data)
+  }
 
   function chooseCategory(data){
     console.log('choosing category', data)
@@ -213,12 +264,14 @@ const App = props => {
   }
 
   function joinRoom(data){
+    console.log('JOINING', data)
     setLoading(true)
     data.id = socket.id
     socket.emit('player-joined', data)
   }
 
   function successJoining(data){
+
     setLoading(false)
     console.log('success joining', data)
     setBackgroundColor(data.backgroundColor)
@@ -230,8 +283,9 @@ const App = props => {
 
 
   function rejoin(data){
-    
+    console.log('rejoining dat', data)
     if (data.rejoinData){
+
       setBallot(data.rejoinData)
       delete data.rejoinData
     } 
@@ -243,8 +297,25 @@ const App = props => {
   }
 
   function setVote(data){
-    setBallot(data.options)
-    navigate('/vote')
+    console.log('SETTING VOTE', data )
+    let isTrue = data.options.find(d => d.isTrue)
+    let bullseye; 
+    if (isTrue){
+      bullseye = isTrue.player.name === me.name
+      for (var i = 0; i < isTrue.also.length; i++){
+        if (isTrue.also[i].player && isTrue.also[i].player.name){
+          bullseye = true
+        }
+      }
+    }
+    if (bullseye){
+      toHost('submit-vote', false)
+      navigate('/bullseye')
+    } else {
+      setBallot(data.options)
+      navigate('/vote')
+    }
+    
   }
 
   function errorJoining(data){
@@ -326,6 +397,10 @@ const App = props => {
     })
   }
 
+  function getSongCategories(){
+    socket.emit('choose-category-player')
+  }
+
   
   return (
      <Provider
@@ -335,6 +410,7 @@ const App = props => {
           setWaiting,
           joinRoom,
           submitDrawing,
+          getSongCategories,
           getPlaylists,
           presentation,
           loading,
@@ -363,6 +439,9 @@ const App = props => {
     </Provider>
   );
 };
+
+
+
 
 export default App;
 

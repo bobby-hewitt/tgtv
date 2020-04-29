@@ -15,7 +15,7 @@ const CTA = (props) =>  {
     }
   }
   return (
-<TouchableHighlight
+    <TouchableHighlight
           style={[styles.outerContainer, {backgroundColor: props.color}]}
             hasTVPreferredFocus={props.index === 0}
             onFocus={() => onFocus()}
@@ -40,16 +40,17 @@ const CTA = (props) =>  {
 const styles = StyleSheet.create({
  outerContainer:{
   overflow:'hidden',
-    height:120,
+    height:80,
     width:554,
-    marginVertical:28,
+    marginVertical:14,
      borderRadius:60,
+     marginHorizontal:30,
 
  },
  underlineController:{
     overflow:'hidden',
-    height:120,
-    marginTop:-10,
+    height:80,
+    marginTop:-5,
     paddingTop:10,
     marginLeft:-10,
     paddingLeft:10,
@@ -70,7 +71,7 @@ const styles = StyleSheet.create({
   backgroundColor:'#000000ff'
  },
   container: {
-    height:120,
+    height:80,
     width:554,
     borderRadius:60,
     
@@ -78,7 +79,7 @@ const styles = StyleSheet.create({
   },
   text:{
     color:'#101010',
-    fontSize:65,
+    fontSize:50,
     
     fontWeight:'bold',
   }

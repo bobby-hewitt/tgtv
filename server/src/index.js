@@ -47,6 +47,7 @@ io.on('connection', function(socket){
   	socket.on('host-to-player', GeneralHost.toPlayer.bind(this, socket))
   	socket.on('host-to-room', GeneralHost.toRoom.bind(this, socket))
     socket.on('choose-category', Song.sendCategories.bind(this, socket))
+    socket.on('choose-category-player', Song.sendCategoriesPlayer.bind(this, socket))
     socket.on('choose-playlists', Song.sendPlaylists.bind(this, socket))
     socket.on('submitting-song-suggestion', Song.sendTracks.bind(this, socket))
 
@@ -74,11 +75,11 @@ function disconnect(socket){
 	console.log('disconnected', socket.id)
 	Rooms.findOne({long: socket.id}, (err, room) => {
 		if (room){
-			console.log('host gone', room)
+			console.log('host gone')
 			socket.broadcast.to(room.long).emit('host-disconnected')
       room.remove()
       Rooms.deleteMany({short: room.short}, (err, res) => {
-        console.log(res)
+        
       } )
 			return 
 		} 

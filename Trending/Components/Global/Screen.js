@@ -13,11 +13,11 @@ const Screen = (props) =>  {
       <View style={[styles.rightOutline, {backgroundColor: props.color}]} />
       <View style={[styles.leftOutline, {backgroundColor: props.color}]} />
       <View style={[styles.topOutline, {backgroundColor: props.color}]} />
-      <View style={[styles.bottomOutline, {backgroundColor: props.color}]} />
+      <View style={[styles.bottomOutline, {backgroundColor: props.color, zIndex:210}]} />
       <View style={[styles.rightJaunt, { borderColor: props.color }]} />
       <View style={[styles.leftJaunt, { borderColor: props.color  }]} />
       <View style={[styles.topJaunt, { borderColor: props.color }]} />
-      <View style={[{ borderColor: props.color}, styles.bottomJaunt ]} />
+      <View style={[{ borderColor: props.color, zIndex:210 }, styles.bottomJaunt]} />
 
     </View>   
   );

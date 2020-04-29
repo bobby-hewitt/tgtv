@@ -4,7 +4,7 @@ import globalContext from 'Contexts/global'
 import './style.scss'
 
 const Join = (props) => {
-	const me = window.localStorage.tgme ? JSON.parse(window.localStorage.tgme) : {name: 'Test', room: 'GGGG'}
+	const me = window.localStorage.tgme ? JSON.parse(window.localStorage.tgme) : {name: 'Bobby', room: 'ABCD'}
 	const state = useContext(globalContext)
 	const [ name, setName] = useState(me.name)
 	const [ room, setRoom ] = useState(me.room)
@@ -33,7 +33,7 @@ const Join = (props) => {
 	
 	const onJoin = () => {
 		state.joinRoom({
-			name,
+			name: name.slice(0,12),
 			room
 		})
 		  

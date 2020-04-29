@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import { Provider } from "../../Context/search";
 import { Join, Instructions, SubmitSuggestions, Scores } from '../../Containers/Global'
-import { Players, RoomCode } from '../../Components/Global'
+import { Players, RoomCode, RoomCodeIndicator } from '../../Components/Global'
 import Round from './Round'
 import globalContext from '../../Context/global'
 import fallbackLies from '../../Data/fallbackLies'
@@ -23,7 +23,7 @@ import fallbackLies from '../../Data/fallbackLies'
 const config = {
   maxPlayers: 6,
   minPlayers: 2,
-  maxSuggestions:5,
+  maxSuggestions:3,
 }
 
 
@@ -194,7 +194,7 @@ const SearchGameController = (props) =>  {
   }
 
   function submittedSuggestion(data){
-    
+    console.log('DATA',data)
     let newQuestions = Object.assign([], questions)
     for (var i = 0; i < newQuestions.length; i++){
       if (newQuestions[i].q === data.q) return
@@ -313,8 +313,9 @@ const SearchGameController = (props) =>  {
 
   function addCorrectAnswer(newQuestions){
     let foundMatch = false 
+    const answer  = questions[round].a[0].trim()
     for( var i = 0 ; i < newQuestions[round].responses.length; i++){
-      if (newQuestions[round].responses[i].answer === questions[round].a[0].trim()){
+      if (newQuestions[round].responses[i].answer === answer){
         foundMatch = true
 
         newQuestions[round].responses[i].isTrue = true
@@ -323,7 +324,7 @@ const SearchGameController = (props) =>  {
     }
     if (!foundMatch){
       newQuestions[round].responses.push({
-      answer: questions[round].a[0],
+      answer: answer,
       votes:[],
       isTrue: true
       })
@@ -378,10 +379,11 @@ function shuffle(a) {
       }
        else {
         // setGameState('scores')
-
-        setRound(round +1)
+ const nextRoundIndex = round +1
+      setRound(nextRoundIndex)
         
-        startSpeech('question', {question: questions[round].q, name: questions[round].player.name}, () => {
+        
+        startSpeech('question', {question: questions[nextRoundIndex].q, name: questions[nextRoundIndex].player.name}, () => {
           sendAnswerInput()
         })
       }
@@ -458,10 +460,10 @@ function shuffle(a) {
     if (round === questions.length-1){
       console.log('END OF GAME')
     } else {
-
-      setRound(round +1)
+      const nextRoundIndex = round +1
+      setRound(nextRoundIndex)
       setGameState('round')   
-      startSpeech('question', {question: questions[round].q, name: questions[round].player.name}, () => {  
+      startSpeech('question', {question: questions[nextRoundIndex].q, name: questions[nextRoundIndex].player.name}, () => {  
       sendAnswerInput()
       })
     }
@@ -491,8 +493,11 @@ function shuffle(a) {
       }}
     >     
       <View style={[styles.container]}> 
+        {gameState !== 'join' &&
+          <RoomCodeIndicator roomCode={room}/>
+        } 
         {(gameState === 'join' || gameState === 'instructions') &&
-          <Join />
+          <Join guruImage={require('../../assets/images/fullGuruRed.png')}/>
         }
         {gameState === 'instructions' &&
           <Instructions onComplete={onInstructionsComplete} />

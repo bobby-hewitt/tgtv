@@ -51,7 +51,7 @@ function getScript(key, params){
 		],
 		'introduction-song':[
 			`Hello, I'm the trending guru... Let's play.... DJ...D...J.... Pick some playlists to get us going`,
-			`Let's play.... DJ...D...J.... You'll need all your music knowledge and lighning speed. Search for some playlists to get us started`,
+			`Let's play.... DJ...D...J.... You'll need all your music knowledge and lightning speed. Search for some playlists to get us started`,
 		],
 		question: [
 			`This one's from ${params.name}.... ... ${params.question}  .... Enter your lies ... now`,
@@ -84,7 +84,8 @@ function getScript(key, params){
 			// `...And... bang on the money....  ${params.player} got a bullseye! `
 		],
 		'songs-playlist':[
-			`Round ${params.round}...... .. ${params.name}.... Starting in 3........... 2...........1........... `
+			`Round ${params.round}...... .. ${params.name}.... ${params.player ? 'Chosen by ' + params.player : ''}............. Starting in 3........... 2...........1........... `,
+			`Round ${params.round}...... .. ${params.player ? 'Chosen by ' + params.player : ''}.......... ${params.name}.... Starting in 3........... 2...........1........... `
 		],
 		'songs-suggestions-complete':[
 			`Great! Let's get started.... Remember... This game is all about speed.`
@@ -92,6 +93,22 @@ function getScript(key, params){
 		'movie-start-presentations':[
 			`Great! Let's get started.... Remember... This game is all about speed.`
 		],
+		'score-time':[
+			`That's the end of that round.... Let's have a look at the scores`,
+			`That's the end of that round... What are the scores on the doors`,
+			`What are the scores looking like.`,
+			`Ok, it's time to check out the scores.`,
+		],
+		'final-scores':[
+			`That's it....  Time to see the final scores.`,
+			`You've done all you can do... .  Time to see the final scores.`,
+			`That's all for now... .  Time to find out who won`,
+			`We're all done here... .  Time to shine a light on the scores`,
+		],
+		'end-of-game':[
+			`Congrats ${params.winner}.... See you next time`,
+			`Annnnd ${params.winner} is our winner.... See you next time`,
+		]
 	}
 	let selection = speech[key]
 	let item = selection[getRandomIndex(selection.length)]

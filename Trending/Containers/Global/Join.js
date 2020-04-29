@@ -11,7 +11,7 @@ import Context from '../../Context/search'
 import globalContext from '../../Context/global'
 import { Players, RoomCode } from '../../Components/Global'
 
-const Join = () =>  {
+const Join = ({guruImage}) =>  {
   
   const { players, config, room , gameState } = useContext(Context)
   const { backgroundColor} = useContext(globalContext)
@@ -36,33 +36,13 @@ const Join = () =>  {
     <React.Fragment>
      
       <Players players={players} {...config} scale={scale} backgroundColor={backgroundColor}/> 
-      <RoomCode room={room}  scale={scale}/> 
+      <RoomCode guruImage={guruImage} room={room}  scale={scale}/> 
     </React.Fragment>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex:1,
-    width:Dimensions.get('window').width - (Dimensions.get('window').width /10),
-    alignItems:'center',
-    justifyContent:'center'
-  },
-  innerContainer: {
-    flex:1,
-    paddingLeft:Dimensions.get('window').width /20,
-    alignItems:'center',
-    justifyContent:'center' 
-  },
-  link:{
-    color:'#fff',
-    fontSize:80,
-  },
-  roomCode:{
-    fontSize:200,
-    color:'#ffffff',
-    fontWeight:'bold'
-  }
+  
 });
 
 export default Join
