@@ -15,9 +15,7 @@ const Join = (props) => {
 			{state.readyToStartGame &&
 				<Button label="Everyone's in" onClick={startGame} />
 			}
-			{!state.readyToStartGame && 
-				<p>Waiting for more players</p>
-			}
+			
 		</div>
 	)
     

@@ -9,9 +9,9 @@ import {
 import gs from '../../Styles'
 import Context from '../../Context/search'
 import globalContext from '../../Context/global'
-import { Players, RoomCode } from '../../Components/Global'
+import { Players, RoomCode, Scale} from '../../Components/Global'
 
-const Join = ({guruImage}) =>  {
+const Join = ({guruImage, colors, standout, dominantColor, recessiveColor}) =>  {
   
   const { players, config, room , gameState } = useContext(Context)
   const { backgroundColor} = useContext(globalContext)
@@ -34,9 +34,20 @@ const Join = ({guruImage}) =>  {
   }, [room, gameState])
   return (
     <React.Fragment>
-     
-      <Players players={players} {...config} scale={scale} backgroundColor={backgroundColor}/> 
-      <RoomCode guruImage={guruImage} room={room}  scale={scale}/> 
+      
+      <View style={{    
+    flex:0.42,
+    
+  }}>
+      <Scale  fillContainer  scaleTo={(room !== '----' && gameState === 'join') ? 1 : 0 }>
+      <Players colors={colors} players={players} {...config} backgroundColor={backgroundColor}/> 
+      </Scale>
+      </View>
+
+      
+      <Scale fillContainer center scaleTo={(room !== '----' && gameState === 'join') ? 1 : 0 }>
+      <RoomCode dominantColor={dominantColor} recessiveColor={recessiveColor}guruImage={guruImage} room={room} /> 
+      </Scale>
     </React.Fragment>
   );
 };

@@ -1,4 +1,5 @@
-import React, {useEffect, useState, useRef} from 'react';
+
+import React, {useEffect, useState, useContext, useRef} from 'react';
 import {
   View,
   StyleSheet,
@@ -6,6 +7,7 @@ import {
   Animated,
   Easing,
 } from 'react-native';
+import globalContext from '../../Context/global'
 
 const triangles = [true,true,true,true,true,true,true,true,true]
 
@@ -23,8 +25,9 @@ const triangles = [true,true,true,true,true,true,true,true,true]
     // }
    
 
-const CTA = (props) =>  {
-  const rotation = 0
+const Background = (props) =>  {
+  const globalState = useContext(globalContext)
+  const rotationValue = useRef(new Animated.Value(0)).current 
   const offset = useRef(new Animated.Value(0)).current 
 
   useEffect(() => {
@@ -37,22 +40,27 @@ const CTA = (props) =>  {
         duration: 500,    
       }).start()
   },[props.backgroundPosition])
-//   useEffect(() => {
-    
-//       rotate()
-//     return () => {
-//       // rotation.stopAnimation()
-//     }
-//   },[])
-// function rotate(){
-//    Animated.timing(rotation, {
-//         toValue: 360,
-//         duration: 5000000 ,
-//         easing: Easing.linear,
-//       }).start(() => rotate())
-//   }
-  
 
+
+
+
+
+  useEffect(() => {
+    if (props.backgroundPosition === 'center'){
+      Animated.timing(rotationValue, {
+        toValue: 1,
+        duration: 1000 ,
+        useNativeDriver:true,
+        easing: props.easing ? props.easing : Easing.easeInOut,
+      }).start(() => rotationValue.setValue(0))
+    }
+  },[globalState.backgroundSpin ])
+
+  
+ const rotation = rotationValue.interpolate({
+    inputRange: [-1, 1],
+    outputRange: ['-40deg', '40deg']
+  })
   // useEffect(() => {
   //   console.log(props.activeGame)
   //   // if (props.activeGame){  
@@ -71,7 +79,7 @@ const CTA = (props) =>  {
   //   // }
   // },[props.activeGame])
   return (
-    <Animated.View style={[styles.outerContainer, {left: offset, right : offset }]}>
+    <Animated.View style={[styles.outerContainer, {left: offset, right : offset, height:'100%' }]}>
     <Animated.View style={[styles.container, {transform: [{rotate: rotation}]}]}>  
        {triangles.map((item, i) => {
           return (
@@ -115,16 +123,17 @@ const styles = StyleSheet.create({
   triangle:{
     position:'absolute',
     top: Dimensions.get('window').height/2 - 750,
-    left: Dimensions.get('window').width/2 -300 ,
+    left: Dimensions.get('window').width/2 -280 ,
     borderLeftWidth: 280,
     borderLeftColor: 'transparent',
     borderRightWidth: 280,
     borderRightColor: 'transparent',
     borderTopWidth: 1500,
-    borderTopColor: '#ffffff33',   
+    borderTopColor: '#ffffff15',   
     width:0,
     height:0,
   }
 });
 
-export default CTA;
+
+export default Background

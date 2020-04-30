@@ -12,7 +12,7 @@ const RoomCodeIndicator = ({roomCode, color, guruImage}) => {
 		<View style={styles.container}>
 			
 		
-			<Text style={styles.roomCode}>Room code: {roomCode}</Text>
+			<Text style={styles.roomCode}>Room code: <Text style={{fontWeight:'bold', fontSize:40}}>{roomCode}</Text></Text>
 		</View>
 	)
 }
@@ -37,8 +37,8 @@ const styles = StyleSheet.create({
 	roomCode:{
 		color:'#fff',
 		marginLeft:12,
-		fontSize:24,
-		fontWeight:'bold',
+		fontSize:28, 
+		
 	},
 	label:{
 

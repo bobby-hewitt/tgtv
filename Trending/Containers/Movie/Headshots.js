@@ -7,21 +7,33 @@ import {
   Text,
 } from 'react-native';
 import gs from '../../Styles'
-
+import {
+  Scale
+} from '../../Components/Global'
 const Headshots = ({players}) =>  {
 
  
   return (
-    <View style={[gs.row, gs.centeredContainer, {flex:1, flexWrap:'wrap'}]}>
+    <View style={[gs.row, styles.playersContainer]}>
         {players && players.map((item, i) => {
           return(
             <View key={i} style={[styles.playerContainer]}>
-              <View style={[styles.imageContainer, {backgroundColor: item.headshot ? '#fff' : 'transparent'}]}>
-                {item.headshot && 
-                  <Image style={{width:300, height:300}}source={{uri:item.headshot}} />
-                }
-              </View>
-              <Text style={[gs.bodycopy, gs.bold]}>{item.name}</Text>
+              
+              
+               
+                  
+                 
+                  <Scale scaleTo={item.headshot ? 1 : 0} fillContainer>
+                  <View style={[styles.imageContainer, {transform:[{rotate:i % 2 === 0 ? -0.05 : 0.05}]}]}>
+                  <Image style={{width:300, height:300, }}source={{uri:item.headshot}} />
+                  </View>
+                  </Scale>
+                
+                  
+                
+              
+              
+              <Text style={[gs.bodycopy, gs.bold, {textAlign:'center'}]}>{item.name}</Text>
             </View>
           )
         })}
@@ -30,19 +42,34 @@ const Headshots = ({players}) =>  {
 };
 
 const styles = StyleSheet.create({
+  playersContainer:{
+    flex:1, 
+    flexWrap:'wrap', 
+    height:'100%', 
+    
+    alignItems:'center',
+    justifyContent:'center',
+  },
   playerContainer: {
-    flex:1,
+    maxHeight:'40%',
+    
     alignItems:'center',
     justifyContent:'center',
     minWidth:500,
     marginVertical:40,
   },
   imageContainer:{
+    borderWidth:10,
+    borderColor:'#000',
+    backgroundColor:'#fff',
     width:300,
     height:300, 
-    borderRadius:200,
+    borderRadius:10,
+    
     marginBottom:20,
-  }
+
+  },
+
 });
 
 export default Headshots;

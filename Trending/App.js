@@ -19,8 +19,9 @@ import {
 // socket.emit('host-joined', 'search')
 
 const App = () => {
-  const [ backgroundColor, setBackgroundColor] = useState('#5a7ec0')
+  const [ backgroundColor, setBackgroundColor] = useState('#173f5f')
   const [ backgroundPosition, setBackgroundPosition] = useState('right')
+  const [ backgroundSpin, setBackgroundSpin] = useState(0)
   const [ activeGame, setActiveGame] = useState(false)
   return (
     <Provider
@@ -29,6 +30,8 @@ const App = () => {
         backgroundColor,
         setBackgroundColor,
         backgroundPosition,
+        backgroundSpin, 
+        setBackgroundSpin,
         setBackgroundPosition,
         activeGame, 
         setActiveGame

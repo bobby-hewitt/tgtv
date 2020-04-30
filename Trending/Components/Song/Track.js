@@ -1,12 +1,13 @@
-import React, {useEffect, useState, useRef} from 'react'
+import React, {useEffect, useState, useContext,  useRef} from 'react'
 import {
-	View, Text, Image, StyleSheet, Dimensions, Animated
+	View, Text, Image, StyleSheet, Dimensions, Animated, Easing
 } from 'react-native'
 import gs from '../../Styles'
 import { playRemoteSound, stopRemoteSound } from '../../Helpers/Sound'
 import { Scale, Timer, Translate } from '../Global'
 import globalContext from '../../Context/global'
-const Track = ({image_url, preview_url, toRoom, setGameState, sendResponses, gameState, artist, nextTrack, votesLength, playersLength, votes, name, responses, artistResponses, nameResponses}) => {
+const Track = ({updateRecordIndex, image_url, preview_url, toRoom, setGameState, sendResponses, tracksLength, recordIndex, gameState, artist, nextTrack, votesLength, playersLength, votes, name, responses, artistResponses, nameResponses}) => {
+	const globalState = useContext(globalContext)
 	const [ showVotes, setShowVotes ] = useState(false)
 	const [ showAnswer, setShowAnswer ] = useState(false)
 	const [ fadeOut, setFadeout ] = useState(false)
@@ -43,24 +44,24 @@ const Track = ({image_url, preview_url, toRoom, setGameState, sendResponses, gam
 	function translate(){
 		const trueIndex = responses.findIndex(r => r.isTrue)
 		let to = 
-			trueIndex=== 0 ? {x: 415, y:250} : 
-			trueIndex=== 1 ? {x: -450, y:250} : 
-			trueIndex=== 2 ? {x: 415, y:-205} : 
-			{x: -450, y:-205} 
+			trueIndex=== 0 ? {x: 435, y:270} : 
+			trueIndex=== 1 ? {x: -435, y:270} : 
+			trueIndex=== 2 ? {x: 435, y:-120} : 
+			{x: -435, y:-120} 
 		Animated.parallel([
 			Animated.timing(translateX, {
 		        toValue: to.x,
-		        useNativeDriver: true,
+		        useNativeDriver: true,easing:Easing.easeInOut,
 		        duration: 500,    
 		      }),
 			Animated.timing(translateY, {
 		        toValue: to.y,
-		        useNativeDriver: true,
+		        useNativeDriver: true,easing:Easing.easeInOut,
 		        duration: 500,    
 		      }),
 			Animated.timing(voteMargin, {
 		        toValue: 100,
-		        
+		        easing:Easing.easeInOut,
 		        duration: 500,    
 		      })
 		]).start()
@@ -75,12 +76,18 @@ const Track = ({image_url, preview_url, toRoom, setGameState, sendResponses, gam
 
 	function correctAnimationComplete(item){
 		if(item.isTrue && fadeOut){
+			
+				globalState.setBackgroundSpin(globalState.backgroundSpin - 1)
+				updateRecordIndex()
+			
 			setTimeout(() =>{
+
 				nextTrack()
 			},1000)
 		} else if (showAnswer){
 			console.log('setting fadeout')
 			setTimeout(() =>{
+				
 				setFadeout(true)
 			},2000)
 		}
@@ -99,8 +106,9 @@ const Track = ({image_url, preview_url, toRoom, setGameState, sendResponses, gam
 	
 
 	return(
-		<View style={styles.outerContainer} >	
-
+		<View style={gs.centeredContainer} >	
+			<Scale duration={500} fillContainer scaleTo={1}>
+			<View style={styles.outerContainer} >
 			{responses.map((item, i) => {
 				return(
 					
@@ -109,8 +117,8 @@ const Track = ({image_url, preview_url, toRoom, setGameState, sendResponses, gam
 					<Scale  scaleFrom={1} fillContainer scaleTo={showAnswer ? fadeOut ? 0 : item.isTrue ? 1 : 0 : 1} duration={500} animationComplete={() => correctAnimationComplete(item)}>
 					<View style={[styles.responseInnerContainer, {transform: [{rotate: i % 2 === 0 ? -0.05 : 0.05}]}]}>
 					
-						<Text  style={[gs.bodycopy, gs.bold, {fontSize:40, textAlign:'center', color:'#101010'}]}>{item.name}</Text>
-						<Text  style={[gs.bodycopy, gs.bold, {fontSize:40, textAlign:'center', color:'#101010', marginTop:24}]}>{item.artist}</Text>
+						<Text  style={[gs.bodycopy, gs.bold, {fontSize:36, fontWeight:'900', textAlign:'center', color:'#101010'}]}>{item.name}</Text>
+						<Text  style={[gs.bodycopy, gs.bold, {fontSize:36, textAlign:'center', color:'#101010', marginTop:12}]}>{item.artist}</Text>
 					</View>
 					{showVotes &&
 							<Scale duration={500} scaleTo={1} animationComplete={votesAnimationComplete}>
@@ -146,6 +154,7 @@ const Track = ({image_url, preview_url, toRoom, setGameState, sendResponses, gam
 								</View>
 							</Scale>
 						}
+
 					</Scale>	
 					</Animated.View>
 					
@@ -153,9 +162,12 @@ const Track = ({image_url, preview_url, toRoom, setGameState, sendResponses, gam
 			})
 			
 			}
-			{!showVotes &&
+			</View>
+			</Scale>
+			{!showVotes && 
 				<Timer backgroundColor={'#1DB954'}  inverse duration={10} onComplete={votesOver}/>
 			}
+
 		</View>
 	)
 }
@@ -163,7 +175,7 @@ const Track = ({image_url, preview_url, toRoom, setGameState, sendResponses, gam
 const styles= StyleSheet.create({
 	outerContainer:{
 		paddingTop:50,
-		paddingBottom:150,
+		paddingBottom:250,
 		flex:1,
 		width: Dimensions.get('window').width - (Dimensions.get('window').width/10),
 		flexDirection:'row',
@@ -233,7 +245,7 @@ const styles= StyleSheet.create({
 	voteContainer:{
 		
 		
-		height:48,
+		height:68,
 		marginRight:24,
 		backgroundColor:'#fff',
 		borderRadius:50,
@@ -242,6 +254,8 @@ const styles= StyleSheet.create({
 	    shadowOpacity: 0.4,
 	    shadowRadius: 20,
 	    paddingVertical:4,
+	    borderWidth:10,
+		borderColor:'#000',
 		paddingLeft:32,
 		paddingRight:20,
 		alignItems:'center',

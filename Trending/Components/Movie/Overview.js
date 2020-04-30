@@ -17,7 +17,7 @@ const Overview = ({name, title, cast, storyboard, score}) =>  {
     
     <View style={[styles.container]}>
         <Text style={[gs.subtitle, gs.bold, {textAlign:'center', width:'100%'}]}>{title}</Text>
-        <Text style={[gs.bodycopy, gs.bold, {fontWeight:'normal', fontSize:40, marginTop:12, textAlign:'center', width:'100%'} ]}>Directed by <Text style={{fontWeight: '900'}}>{name}</Text>, Starring <Text style={{fontWeight: '900'}}>{cast.name}</Text> as {cast.charName}</Text>
+        
         <Text style={[gs.bodycopy, gs.bold, {fontWeight:'900', fontSize:40, marginTop:40, textAlign:'center', width:'100%'} ]}>Average rating: {score}</Text>
     </View>
     

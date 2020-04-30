@@ -7,6 +7,7 @@ import {
   Animated,
   Text,
   Dimensions,
+  Easing,
   TVEventHandler,
   Image,
   FlatList,
@@ -43,6 +44,7 @@ const LandingPage = () =>  {
   }
 
   const onCTAPress = (value) => {
+    globalState.setBackgroundSpin(globalState.backgroundSpin + 1)
     globalState.setActiveGame(value)
   } 
 
@@ -84,18 +86,21 @@ const LandingPage = () =>  {
       Animated.timing(marginTop, {
         toValue: -activeIndex * 550 ,
         useNativeDriver:true,
-        duration: 250,    
+        
+        duration: 400,    
       }),
       Animated.timing(rotateXValue, {
         toValue: actions[activeIndex].armRotateX ,
         useNativeDriver:true,
-        duration: 250,    
+        easing: Easing.bounce,
+        duration: 1000,    
       }),
-      Animated.timing(rotateZValue, {
-        toValue: actions[activeIndex].armRotateZ ,
-        useNativeDriver:true,
-        duration: 250,    
-      }),
+      // Animated.timing(rotateZValue, {
+      //   toValue: actions[activeIndex].armRotateZ ,
+      //   useNativeDriver:true,
+      //   easing: Easing.elastic(-1),
+      //   duration: 400,    
+      // }),
 
     ]).start();
   }, [activeIndex]);
@@ -114,7 +119,7 @@ const LandingPage = () =>  {
         <View style={styles.row}>
           <Animated.View style={[styles.actionsContainer, {transform: [{translateX: marginLeft}]}]}>
             <View style={{width:'100%', alignItems:'center'}}>
-            <Image source={require('../assets/images/logo.png')} style={styles.logo} />
+            
             </View>
             
             {actions.map((item, i) => {
@@ -152,7 +157,7 @@ const LandingPage = () =>  {
               <Animated.Image source={require('../assets/images/home/arm.png')} style={[styles.armImage, {transform: [{rotateX},{rotateZ: rotateZ}]}]} />
             <Image source={require('../assets/images/home/guru.png')} style={styles.guruImage} />
             <View style={styles.magnifyingGlass} >
-            <Scale fillContainer duration={actions[activeIndex].value === 'search' ? 300 : 100}scaleTo={actions[activeIndex].value === 'search' ? 1 : 0}>
+            <Scale fillContainer duration={actions[activeIndex].value === 'search' ? 600 : 100} scaleFrom={0.5} scaleTo={actions[activeIndex].value === 'search' ? 1 : 0}>
               <Image source={require('../assets/images/home/magnifyingGlass3.png')} />
             </Scale>
            

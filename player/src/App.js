@@ -117,20 +117,20 @@ const App = props => {
   },[])
 
   function socketConnection(fromNoId){
-    if (!fromNoId){
-      console.log("SCOKET CONNECTION CB", socket.id)
-    }
-    if(window.localStorage.tgme){
-        const me = JSON.parse(window.localStorage.tgme)
-        console.log('RECONNECTING', socket)
-        const rejoinData = {
-          name: me.name,
-          room:me.room,
-          id:socket.id
-        }
-        socket.emit('player-joined', rejoinData)
-        console.log(rejoinData)
-      }
+    // if (!fromNoId){
+    //   console.log("SCOKET CONNECTION CB", socket.id)
+    // }
+    // if(window.localStorage.tgme){
+    //     const me = JSON.parse(window.localStorage.tgme)
+    //     console.log('RECONNECTING', socket)
+    //     const rejoinData = {
+    //       name: me.name,
+    //       room:me.room,
+    //       id:socket.id
+    //     }
+    //     socket.emit('player-joined', rejoinData)
+    //     console.log(rejoinData)
+    //   }
   }
 
   function searchSuggestionError(data){
@@ -301,10 +301,12 @@ const App = props => {
     let isTrue = data.options.find(d => d.isTrue)
     let bullseye; 
     if (isTrue){
-      bullseye = isTrue.player.name === me.name
-      for (var i = 0; i < isTrue.also.length; i++){
-        if (isTrue.also[i].player && isTrue.also[i].player.name){
-          bullseye = true
+      bullseye = isTrue.player && isTrue.player.name === me.name
+      if (isTrue.also){
+        for (var i = 0; i < isTrue.also.length; i++){
+          if (isTrue.also[i].player && isTrue.also[i].player.name){
+            bullseye = true
+          }
         }
       }
     }

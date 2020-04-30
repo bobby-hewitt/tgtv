@@ -13,17 +13,17 @@ const stars = [true, true, true, true, true]
 const Option = ({review, rating, index, votes}) => {
   
   return(
-    <View>
+    <View style={styles.reviewContainer}>
     <View style={[styles.starsContainer]}>
       {stars.map((item, i) => {
         if (i < rating) return  <Image style={styles.star} key={i} source={require('../../assets/icons/starSelected.png')} />
-          return  <Image style={styles.star} key={i} source={require('../../assets/icons/star.png')} />
+          return <View style={{height:50}}/>
         
       })}
       </View>
     <View style={[styles.option , {borderColor:'#333',  transform: [{rotate: index % 2 === 0 ? -0.05 : 0.05}]}]}>
       
-      <Text style={[gs.bodycopy, gs.bold, {color:"#101010", textAlign:'center', fontSize:28}]}>{review || 'No comment'}</Text>
+      <Text style={[gs.bodycopy, gs.bold, {color:"#101010", textAlign:'center', fontSize:32}]}>{review || 'No comment'}</Text>
       
     </View>
     <Text style={{width:50, fontWeight:'bold', color:'#fff'}}>{votes !== 0 ? `+${votes}` : ''}</Text>
@@ -36,6 +36,12 @@ const styles = StyleSheet.create({
   starsContainer:{
     flexDirection:'row',
     
+  },
+  reviewContainer:{
+    marginHorizontal:30,
+    alignItems:'center',
+    justifyContent:'flex-end',
+
   },
   star:{
     width:50,

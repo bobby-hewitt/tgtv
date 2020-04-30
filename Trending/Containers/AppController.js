@@ -28,7 +28,7 @@ Lint()
 const actions = [
   {
     "label": "Goggling",
-    backgroundColor: '#5a7ec0'
+    backgroundColor: '#173f5f'
   },
   {
     "label": "Giff show",
@@ -43,7 +43,7 @@ const actions = [
 ]
 
 
-
+ TVMenuControl.enableTVMenuKey()
 
 const AppController = () =>  {
 
@@ -70,20 +70,28 @@ const AppController = () =>  {
   },[globalState.activeGame])
 
   useEffect(() => {
-    TVMenuControl.enableTVMenuKey()
+
+    if (!globalState.activeGame){
+
+       TVMenuControl.disableTVMenuKey()
+    } else {
+       TVMenuControl.enableTVMenuKey()
+    }
     BackHandler.addEventListener('hardwareBackPress', handleBack)
     return () => {
       BackHandler.removeEventListener('hardwareBackPress', handleBack)
     }
-  },[globalState.activeGame])
+  },[globalState])
 
   function handleBack(){
+    
       if (globalState.activeGame){
         globalState.setActiveGame(false)
         globalState.setBackgroundPosition('right')
         TVMenuControl.disableTVMenuKey()
         return true
       } else {
+        console.log('HERE')
         return false
       }
     

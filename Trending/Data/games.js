@@ -1,7 +1,11 @@
 const actions = [
   {
     "label": "Playlist playoff",
-    backgroundColor: '#4285F4',
+    // backgroundColor: '#4285F4',
+    // backgroundColor: '#04011f',
+    
+    // backgroundColor: '#04011f',
+    backgroundColor:'#2e3047',
     guruColor: 'blue',
     value:'song',
     backgroundImage: require('../assets/images/home/songBackground.png'),
@@ -14,7 +18,8 @@ const actions = [
   },
   {
     "label": "Shoestring studios",
-    backgroundColor: '#04011f',
+    
+    backgroundColor: '#0b0d0d',
     guruColor: 'red',
     value: 'movie',
     backgroundImage: require('../assets/images/home/movieBackground.png'),
@@ -25,7 +30,10 @@ const actions = [
   },
   {
     "label": "Webheads",
-    backgroundColor: '#1DB954', 
+    backgroundColor: '#1DB954',
+    backgroundColor: '#1f1f1f',
+
+    // backgroundColor: '#04011f',
     guruColor: 'green',
     value: 'search',
     backgroundImage: require('../assets/images/home/searchBackground.png'),

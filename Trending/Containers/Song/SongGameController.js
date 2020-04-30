@@ -163,17 +163,26 @@ const SongGameController = ({socket, stopBackgroundMusic}) =>  {
 
  function rejoin(index, data){
     if (gameState === 'submitSuggestions'){
-      data.rejoinAt = 'song-suggestions'
+      if (questions.length >= config.maxSuggestions){
+        data.rejoinAt = 'waiting' 
+      } else {
+        data.rejoinAt = 'song-suggestions'
+      }
+        
     } else if (gameState === 'round'){
       //check if player has submitted answer 
-      let hasVoted = questions[round].tracks[trackIndex].votes.find(v => v.player.name === data.name)
-      if (hasVoted){
-        console.log('HAS VOTED', hasVoted, data,name)
+      if (trackIndex < 0){
         data.rejoinAt = 'waiting'
       } else {
-        data.rejoinData = questions[round].tracks[trackIndex].responses
-        
-        data.rejoinAt = 'song-options'
+        let hasVoted = questions[round].tracks[trackIndex].votes.find(v => v.player.name === data.name)
+        if (hasVoted){
+          console.log('HAS VOTED', hasVoted, data,name)
+          data.rejoinAt = 'waiting'
+        } else {
+          data.rejoinData = questions[round].tracks[trackIndex].responses
+          
+          data.rejoinAt = 'song-options'
+        }
       }
     } else if (gameState === 'end'){
       data.rejoinAt = 'end'
@@ -363,7 +372,7 @@ const SongGameController = ({socket, stopBackgroundMusic}) =>  {
           
       
         {(gameState === 'join' || gameState === 'instructions') &&
-          <Join guruImage={require('../../assets/images/fullGuruRed.png')}/>
+          <Join colors={["#f6d55c","#3caea3", '#ed553b']} dominantColor="#ffffff" recessiveColor="#3caea3"/>
         }
     
         {gameState === 'instructions' &&

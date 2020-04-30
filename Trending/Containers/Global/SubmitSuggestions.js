@@ -7,21 +7,23 @@ import {
   Text,
 } from 'react-native';
 import gs from '../../Styles'
-
+import Scale from '../../Components/Global/Scale'
 const SubmitSuggestions = ({questions, limit}) =>  {
 
  
   return (
-    <View style={[gs.row, {flex:1}]}>
-      <View style={[gs.centeredContainer, {flex:1}]}>
-        <Text style={[gs.subtitle, gs.bold]}>Submit your suggestions</Text>
-        <View style={[gs.row] } >
-        <Text style={[gs.title, gs.bold]}>{questions}</Text>
-        <Text style={[gs.title, gs.bold, gs.spacingLeft, gs.spacingRight]}>/</Text>
-        <Text style={[gs.title, gs.bold]}>{limit}</Text>
+    <Scale scaleTo={1} fillContainer>
+      <View style={[gs.row, {flex:1}]}>
+        <View style={[gs.centeredContainer, {flex:1}]}>
+          <Text style={[gs.subtitle, gs.bold]}>Submit your suggestions</Text>
+          <View style={[gs.row] } >
+          <Text style={[gs.title, gs.bold]}>{questions}</Text>
+          <Text style={[gs.title, gs.bold, gs.spacingLeft, gs.spacingRight]}>/</Text>
+          <Text style={[gs.title, gs.bold]}>{limit}</Text>
+          </View>
         </View>
       </View>
-    </View>
+    </Scale>
   );
 };
 

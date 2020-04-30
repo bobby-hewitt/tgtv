@@ -41,13 +41,12 @@ const styles = StyleSheet.create({
 	    shadowOffset: { width: 0, height: 0 },
 	    shadowOpacity: 0.4,
 	    shadowRadius: 20,
-	    borderWidth:10,
-	    borderColor:'#000',
+	    // borderWidth:10,
+	    // borderColor:'#000',
 
-		width:100,
-		height:100,
+		
 		borderRadius:100,
-		backgroundColor:'#fff',
+		// backgroundColor:'#000',
 		position:'absolute',
 		top:0,
 		left:0, 
@@ -55,9 +54,9 @@ const styles = StyleSheet.create({
 		justifyContent:'center'
 	},
 	text:{
-		color:"#101010",
+		color:"#fff",
 		fontWeight:'bold',
-		fontSize:50,
+		fontSize:40,
 		textAlign:'center',
 	}
 })

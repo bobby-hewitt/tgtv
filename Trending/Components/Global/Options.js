@@ -18,14 +18,9 @@ const Options = ({responses, backgroundColor}) => {
 			setShowResponses(true)
 		}
 	return(
+		<Scale scaleTo={1} animationComplete={animationComplete}>
 		<View style={[gs.centeredContainer,  gs.row,{flexWrap:'wrap', flexDirection: 'row-reverse',alignItems:'flex-start', justifyContent:'center'}]}>
-			{!showResponses &&
-			<Scale scaleTo={responses.length < 1 ? 1 : 0} duration={500} fillContainer animationComplete={ () => {
-				if (responses.length >= 1) animationComplete()
-			}}>
-			<Text style={{color:'#fff', fontSize:300, marginTop:-30, textAlign:'center', width:'100%'}}>?</Text>
-			</Scale>			
-			}
+		
 
 			
 
@@ -35,6 +30,7 @@ const Options = ({responses, backgroundColor}) => {
 				)
 			})}
 		</View>
+		</Scale>
 	)
 }
 
@@ -44,7 +40,7 @@ const styles = StyleSheet.create({
 		marginVertical:30,
 		backgroundColor:'#fff',
 		borderRadius:20,
-		
+		backgroundColor:'green',
 		padding:24,
 		maxWidth:'30%',
 		flexWrap:'wrap',

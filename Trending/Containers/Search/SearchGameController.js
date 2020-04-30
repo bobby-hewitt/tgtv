@@ -172,6 +172,8 @@ const SearchGameController = (props) =>  {
         if (hasVoted) data.rejoinAt = 'waiting'
         else data.rejoinAt = 'vote'
       }
+    } else if (gameState === 'end'){
+      data.rejoinAt = 'end'
     } else {
       data.rejoinAt = 'waiting'
     }
@@ -313,7 +315,9 @@ const SearchGameController = (props) =>  {
 
   function addCorrectAnswer(newQuestions){
     let foundMatch = false 
-    const answer  = questions[round].a[0].trim()
+    let answer = questions[round].a[0]
+    answer = answer.replace('uk', '').trim()
+
     for( var i = 0 ; i < newQuestions[round].responses.length; i++){
       if (newQuestions[round].responses[i].answer === answer){
         foundMatch = true
@@ -497,7 +501,7 @@ function shuffle(a) {
           <RoomCodeIndicator roomCode={room}/>
         } 
         {(gameState === 'join' || gameState === 'instructions') &&
-          <Join guruImage={require('../../assets/images/fullGuruRed.png')}/>
+          <Join colors={["#3caea3", '#f6d55c', '#ed553b']}/>
         }
         {gameState === 'instructions' &&
           <Instructions onComplete={onInstructionsComplete} />

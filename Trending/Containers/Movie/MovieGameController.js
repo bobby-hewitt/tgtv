@@ -485,7 +485,7 @@ const Movie = (props) =>  {
           <RoomCodeIndicator roomCode={room}/>
         } 
         {(gameState === 'join' || gameState === 'instructions') &&
-          <Join guruImage={require('../../assets/images/fullGuruRed.png')}/>
+          <Join colors={["#ebbb4a", '#f7ee8b', '#d1d2d4']}/>
         }
     
         {gameState === 'instructions' &&

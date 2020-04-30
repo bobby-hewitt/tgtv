@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
   justifyContent:'center',
   shadowColor: '#fff',
     shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 1,
+    shadowOpacity: 0.5,
     shadowRadius: 70,
  
  },

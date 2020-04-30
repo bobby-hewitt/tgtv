@@ -9,17 +9,17 @@ import {
 } from 'react-native';
 import gs from '../../Styles'
 
-const RoomCode = ({room, scale, guruImage}) =>  {
+const RoomCode = ({room, scale, guruImage, dominantColor, recessiveColor}) =>  {
   return (
       
         <View style={styles.innerContainer}>
-      <Animated.View style={[styles.container, {transform: [{scale}]}]}>   
+      <Animated.View style={[styles.container]}>   
       <React.Fragment>
-        <Text style={[gs.subtitle]}>On your phone, go to</Text>
-        <Text style={[gs.subtitle, gs.bold, gs.spaceBelow]}>Trending.Guru</Text>
-        <Image source={guruImage ? guruImage : require('../../assets/images/fullGuru.png')} style={styles.fullGuru}/>
-        <Text style={[gs.subtitle, gs.spaceAbove]}>Enter room code:</Text>
-        <Text style={[gs.subtitle,  gs.bold]}>{room}</Text>
+        <Text style={[gs.subtitle, {color:dominantColor || "#ffffff"}]}>On your phone, go to</Text>
+        <Text style={[gs.title, gs.bold, gs.spaceBelow]}>Trending.Guru</Text>
+        
+        <Text style={[gs.subtitle, gs.spaceAbove, {color:dominantColor || "#ffffff"}]}>Enter room code:</Text>
+        <Text style={[gs.title,  gs.bold]}>{room}</Text>
         </React.Fragment>
       </Animated.View>
         </View>
@@ -30,6 +30,7 @@ const RoomCode = ({room, scale, guruImage}) =>  {
 const styles = StyleSheet.create({
   container: {
     flex:1,
+
     // width:Dimensions.get('window').width - (Dimensions.get('window').width /10),
     alignItems:'center',
     justifyContent:'center'

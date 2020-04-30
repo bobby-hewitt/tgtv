@@ -1,16 +1,19 @@
 import React, { useState, useRef, useEffect} from 'react'
 import {
 	Animated,
+	Easing
 } from 'react-native'
 
-const Scale = ({toVal, center, fromVal, duration, delay, children, animationComplete, fillContainer}) => {
+const Translate = ({toVal,easing, center, fromVal, duration, delay, children, animationComplete, translateXY,fillContainer}) => {
 	const transform = useRef(new Animated.Value(fromVal || 0)).current
 	useEffect(() => {
+
 		Animated.timing(transform).stop()
 		Animated.timing(transform, {
 	        toValue: toVal,
 	        useNativeDriver: true,
-	        duration: duration, 
+	        duration: duration,
+	        easing: Easing[easing] ,
 	        delay: delay || 0   
 	      }).start( () => {
 	      	if (animationComplete) {
@@ -21,11 +24,11 @@ const Scale = ({toVal, center, fromVal, duration, delay, children, animationComp
 	}, [toVal])	
 
 	return (
-		<Animated.View style={[fillContainer ?  {flex:1, transform:[{translateY:transform}]} :  {transform:[{translateY:transform}]}, center ?{alignItems:'center', justifyContent:'center'} : {}]}>
+		<Animated.View style={[fillContainer ?  {flex:1, transform:[{[translateXY]:transform}]} :  {transform:[{translateY:transform}]}, center ?{alignItems:'center', justifyContent:'center'} : {}]}>
 			{children}
 		</Animated.View>
 	)
 }
 
 
-export default Scale
+export default Translate
