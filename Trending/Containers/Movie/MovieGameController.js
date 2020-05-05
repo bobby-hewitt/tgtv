@@ -16,8 +16,15 @@ import {
   SafeAreaView,
 } from 'react-native';
 import { Provider } from "../../Context/search";
-import { Join, Instructions, SubmitSuggestions, Scores } from '../../Containers/Global'
+import { Join, Instructions, Scores } from '../../Containers/Global'
+import SubmitSuggestions from './SubmitSuggestions'
+import StoryBoard from './StoryBoard'
+import Cast from './Cast'
+import ChooseTitle from './ChooseTitle'
+import CreateTitles from './CreateTitles'
+
 import { Players, RoomCode, Screen, RoomCodeIndicator } from '../../Components/Global'
+import { ClapBoard } from '../../Components/Movie'
 import Headshots from './Headshots'
 import Presentation from './Presentation'
 import Reviews from './Reviews'
@@ -133,14 +140,21 @@ const Movie = (props) =>  {
       action:'vote-on-review', 
       reviews: players[presentationIndex].reviews
     })
-    startSpeech()
+    startSpeech('movie-review-vote', {name: ''} , () => {
+      nextPresentation()
+    })
+    // startSpeech()
 
   }
 
   function finishPresentation(){
-    toRoom({
-      action: 'send-movie-review',
-      player: players[presentationIndex].name
+    //Clapping 
+    setGameState('intermission')
+    startSpeech('movie-review', {}, ()=>{
+      toRoom({
+        action: 'send-movie-review',
+        player: players[presentationIndex].name
+      })
     })
   }
 
@@ -155,7 +169,13 @@ const Movie = (props) =>  {
     let isComplete = checkSubmissions('title', 0)
     
     if (isComplete){
-      toRoom({action:'send-story-board'})
+      setGameState('intermission')
+      toRoom({action:'set-waiting'})
+      startSpeech('movie-storyboard', {}, () => {
+        setGameState('storyboard')
+        toRoom({action:'send-story-board'})
+      })
+      
     }
   }
 
@@ -204,28 +224,65 @@ const Movie = (props) =>  {
     let isComplete = checkCastSubmissions()
     console.log('cast is complete', isComplete)
     if (isComplete){
+      
+      setGameState('intermission')
       toRoom({action:'set-waiting'})
-      startSpeech('movie-start-presentations', {}, () => {
-        
-        nextPresentation()
+      startSpeech('movie-presentation', {}, ()=> {
+         nextPresentation()
       })
     }
   }
 
+  function onCastTimeout(){
+    setGameState('intermission')
+    toRoom({action:'set-waiting'})
+    startSpeech('movie-presentation', {}, ()=> {
+       nextPresentation()
+    })
+  }
+
+  function onHeadshotsTimeout(){
+    toRoom({action:'set-waiting'})
+    startSpeech('movie-create-titles', {}, ()=> {
+      setGameState('createTitles')
+      toRoom({action:'submit-movie-suggestions'})
+    })
+  }
+
+  function onStoryboardTimeout(){
+    setGameState('intermission')
+    toRoom({action:'set-waiting'})
+    startSpeech('movie-cast', {},  ()=> {
+      setGameState('cast')
+      toRoom({action:'send-stars', players})
+    })
+      
+  }
+
   function nextPresentation(){
+    toRoom({action:'set-waiting'})
     setPresentationKey(false)
-    setGameState('presentation')
-    if (presentationIndex < players.length){
+    
+    if (presentationIndex < players.length -1){
       let nextIndex = presentationIndex + 1
-      console.log('next preso index', nextIndex)
-      setPresentationIndex(nextIndex)
-      let player = players[nextIndex]
-      toPlayer({
-        action:'send-presentation',
-        player: player.id,
-        cast: player.cast,
-        title:player.title,
-        storyboard:player.storyboard
+      let key = 
+        nextIndex === 0 ? 
+          'movie-presentation-player-first' :
+        nextIndex === players.length -1 ? 
+          'movie-presentation-player-last' :
+          'movie-presentation-player' 
+
+      startSpeech(key, {name: players[nextIndex].name}, () => {
+        setPresentationIndex(nextIndex)
+        setGameState('presentation')
+        let player = players[nextIndex]
+        toPlayer({
+          action:'send-presentation',
+          player: player.id,
+          cast: player.cast,
+          title:player.title,
+          storyboard:player.storyboard
+        })
       })
     } else {
       setGameState('end')
@@ -246,7 +303,12 @@ const Movie = (props) =>  {
     setPlayers(newPlayers)
     let isComplete = checkSubmissions('headshot', 0)
     if (isComplete){
-      toRoom({action:'submit-movie-suggestions'})
+      toRoom({action:'set-waiting'})
+      startSpeech('movie-create-titles', {}, ()=> {
+        setGameState('createTitles')
+        toRoom({action:'submit-movie-suggestions'})
+      })
+      
     }
   }
 
@@ -264,7 +326,13 @@ const Movie = (props) =>  {
     let isComplete = checkSubmissions('storyboard', storyboardLimit)
     console.log('is complete', isComplete, )
     if (isComplete){
-      toRoom({action:'send-stars', players})
+      setGameState('intermission')
+      toRoom({action:'set-waiting'})
+      startSpeech('movie-cast', {},  ()=> {
+        setGameState('cast')
+        toRoom({action:'send-stars', players})
+      })
+      
     }
   }
   
@@ -285,7 +353,11 @@ const Movie = (props) =>  {
     globalState.setBackgroundPosition('center')
     props.stopBackgroundMusic()
 
-    setGameState('instructions')
+    setGameState('intermission')
+    toRoom({action:'set-waiting'})
+    startSpeech('movie-headshots', {}, ()=> {
+      onInstructionsComplete()
+    })
     
   }
 
@@ -355,12 +427,12 @@ const Movie = (props) =>  {
     setRoom(data.short)
   }
   function onInstructionsComplete(){
-    console.log('INSTRUCTIONS COMPLETE')
-    startSpeech('introduction-song', {}, () => {
-      setGameState('submitSuggestions')
+    // console.log('INSTRUCTIONS COMPLETE')
+    // startSpeech('introduction-song', {}, () => {
+      // setGameState('submitSuggestions')
       toRoom({action: 'send-head-shot'})
       setGameState('headshots')
-    })
+    
   }
 
   function submittedSuggestion(data){
@@ -370,11 +442,15 @@ const Movie = (props) =>  {
     setQuestions(newQuestions)
     
     if (newQuestions.length >= players.length * 3){
-      socket.emit('set-room-waiting')  
-      socket.emit('send-movie-questions', {
-        players, 
-        questions: newQuestions
+      setGameState('intermission')
+      toRoom({action:'set-waiting'})
+      startSpeech('movie-choose-title', {}, ()=> {
+        socket.emit('send-movie-questions', {
+          players, 
+          questions: newQuestions
+        })
       })
+      
     }
   }
 
@@ -467,6 +543,9 @@ const Movie = (props) =>  {
 
 
 
+
+
+
   return (
     <Provider
       value={{
@@ -487,13 +566,10 @@ const Movie = (props) =>  {
         {(gameState === 'join' || gameState === 'instructions') &&
           <Join colors={["#ebbb4a", '#f7ee8b', '#d1d2d4']}/>
         }
-    
         {gameState === 'instructions' &&
-          
           <Instructions onComplete={onInstructionsComplete} />
-
-
         }
+        
         {gameState === 'presentation' &&
             <Presentation players={players} presentationIndex={presentationIndex} presentationKey={presentationKey} backgroundColor={globalState.backgroundColor}/>
         }
@@ -501,11 +577,24 @@ const Movie = (props) =>  {
             <Reviews sendReviewVote={sendReviewVote} players={players} presentationIndex={presentationIndex} backgroundColor={globalState.backgroundColor}/>
         }
         {gameState === 'headshots' &&
-            <Headshots players={players}/>
+            <Headshots players={players} onHeadshotsTimeout={onHeadshotsTimeout}/>
         }
         {gameState === 'submitSuggestions' &&
           <SubmitSuggestions questions={questions.length} limit={players.length * 3}/>
         }
+        {gameState === 'chooseTitle' &&
+          <ChooseTitle />
+        }
+        {gameState === 'createTitles' &&
+         <CreateTitles />
+        }
+        {gameState === 'storyboard' &&
+          <StoryBoard onStoryboardTimeout={onStoryboardTimeout} questions={questions.length} limit={players.length * 3}/>
+        }
+        {gameState === 'cast' &&
+          <Cast onCastTimeout={onCastTimeout}/>
+        }
+        
        
       </View>
     </Provider>

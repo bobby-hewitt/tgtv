@@ -30,7 +30,7 @@ const Timer = ({duration, onComplete}) => {
   }, [timeLeft]);
 	return (
 		<View style={styles.outerContainer}>
-			<Text style={styles.text}>{timeLeft}</Text>
+			<Text style={styles.text}>{timeLeft > 0 ? timeLeft : ''}</Text>
 		</View>
 	)
 }

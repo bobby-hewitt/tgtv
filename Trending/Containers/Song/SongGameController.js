@@ -15,7 +15,8 @@ import {
   SafeAreaView,
 } from 'react-native';
 import { Provider } from "../../Context/search";
-import { Join, Instructions, SubmitSuggestions, Scores, } from '../../Containers/Global'
+import { Join, Instructions, Scores, } from '../../Containers/Global'
+import SubmitSuggestions from './SubmitSuggestions'
 import { Players, RoomCode, RoomCodeIndicator } from '../../Components/Global'
 
 import globalContext from '../../Context/global'
@@ -25,7 +26,7 @@ const config = {
   maxPlayers: 6,
   minPlayers: 1,
   maxSuggestions:3,
-  maxTracks:5,
+  maxTracks:7,
 }
 
 
@@ -221,6 +222,7 @@ const SongGameController = ({socket, stopBackgroundMusic}) =>  {
     newQuestions.push(data)
     setQuestions(newQuestions)
     if (newQuestions.length >= config.maxSuggestions){
+      
       socket.emit('set-room-waiting')
        startSpeech('songs-suggestions-complete', {}, () => {
          
@@ -372,14 +374,14 @@ const SongGameController = ({socket, stopBackgroundMusic}) =>  {
           
       
         {(gameState === 'join' || gameState === 'instructions') &&
-          <Join colors={["#f6d55c","#3caea3", '#ed553b']} dominantColor="#ffffff" recessiveColor="#3caea3"/>
+          <Join colors={["#f6d55c", '#ed553b',"#3caea3"]} dominantColor="#ffffff" recessiveColor="#3caea3"/>
         }
     
         {gameState === 'instructions' &&
           <Instructions onComplete={onInstructionsComplete} />
         }
         {gameState === 'submitSuggestions' &&
-          <SubmitSuggestions questions={questions.length} limit={config.maxSuggestions}/>
+          <SubmitSuggestions maxSuggestions={config.maxSuggestions} questions={questions} limit={config.maxSuggestions}/>
         }
         {(gameState === 'round' ||gameState === 'reveal') &&
           <Round round={round} toRoom={toRoom}  setGameState={(n) => setGameState(n)}config={config} gameState={gameState}nextTrack={nextTrack} players={players}sendResponses={sendResponses} question={questions[round]} trackIndex={trackIndex}/>
@@ -424,3 +426,7 @@ const styles = StyleSheet.create({
 });
 
 export default SongGameController;
+
+
+
+//"#f6d55c","#3caea3", '#ed553b'

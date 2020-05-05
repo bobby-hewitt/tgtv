@@ -49,6 +49,13 @@ const LandingPage = () =>  {
   } 
 
   useEffect(() => {
+    
+    return () => {
+
+    }
+  },[])
+
+  useEffect(() => {
     if (globalState.activeGame){
       Animated.parallel([
        Animated.timing(marginRight, {

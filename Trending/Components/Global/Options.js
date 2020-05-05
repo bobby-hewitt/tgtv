@@ -10,23 +10,26 @@ import { SearchOption } from '../Search'
 import gs from '../../Styles'
 
 
-const Options = ({responses, backgroundColor}) => {
+const Options = ({responses, backgroundColor, sendVote}) => {
 
-
+	// console.log('optoins', responses)
 	const [ showResponses, setShowResponses ] = useState(false)
-		function animationComplete(){
-			setShowResponses(true)
+	function animationComplete(){
+		setShowResponses(true)
+	}
+
+	function responseShown(i){
+		console.log('response shown', i)
+		if (i === responses.length-1){
+			sendVote()
 		}
+	}
 	return(
-		<Scale scaleTo={1} animationComplete={animationComplete}>
-		<View style={[gs.centeredContainer,  gs.row,{flexWrap:'wrap', flexDirection: 'row-reverse',alignItems:'flex-start', justifyContent:'center'}]}>
-		
-
-			
-
+		<Scale scaleTo={1} fillContainer animationComplete={animationComplete}>
+		<View style={[gs.centeredContainer,  gs.row,{flex:1,flexWrap:'wrap', flexDirection: 'row',alignItems:'flex-start', justifyContent:'center'}]}>
 			{showResponses && responses.map((item, i) => {
 				return(
-					<SearchOption backgroundColor={0} key={i} {...item} i={i} />
+					<SearchOption animationComplete={responseShown}backgroundColor={0} key={i} {...item} i={i} />
 				)
 			})}
 		</View>
@@ -35,18 +38,7 @@ const Options = ({responses, backgroundColor}) => {
 }
 
 const styles = StyleSheet.create({
-	option: {
-		marginHorizontal:24,
-		marginVertical:30,
-		backgroundColor:'#fff',
-		borderRadius:20,
-		backgroundColor:'green',
-		padding:24,
-		maxWidth:'30%',
-		flexWrap:'wrap',
-		alignItems:'center',
-		justifyContent:'center'
-	}
+	
 })
 
 export default Options

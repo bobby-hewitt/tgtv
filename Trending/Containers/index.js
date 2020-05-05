@@ -1,4 +1,5 @@
 export { default as LandingPage  } from './LandingPage'
 export { default as AppController  } from './AppController'
+export { default as SplashScreenController  } from './SplashScreenController'
 export * from './Search'
 export * from './Global'

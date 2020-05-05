@@ -15,18 +15,14 @@ const Reviews = ({players, backgroundColor, sendReviewVote, presentationIndex, v
   const [ counter, setCounter ] = useState(-1)
 
 
-  useEffect(() => {
-    const intervalId = setTimeout(() => {
-      setCounter(counter + 1);
-        if (!counter >= player.reviews.length){
-          clearTimeout(intervalId);
-          return sendReviewVote()
-        }
-      }, 1000);
-      return () => clearTimeout(intervalId);
-  }, [counter]);
+  
 
 
+  function animationComplete(index){
+    if (index === player.reviews.length-1){
+      sendReviewVote()
+    }
+  }
 
 
   const getAverageScore = () =>{
@@ -47,7 +43,7 @@ const Reviews = ({players, backgroundColor, sendReviewVote, presentationIndex, v
         <View style={styles.reviewsContainer}>
         {player.reviews.map((item, i) => {
           return(
-            <Scale key={i} scaleTo={counter >= i ? 1 : 0} >
+            <Scale key={i} delay={i * 500} animationComplete={() => animationComplete(i)}>
             <View style={gs.row}>
             <Review  index={i} {...item}/>
             

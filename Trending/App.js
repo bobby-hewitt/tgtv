@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { Provider } from "./Context/global";
 import { 
-  AppController 
+  SplashScreenController 
 } from './Containers';
 
 
@@ -39,7 +39,7 @@ const App = () => {
       }}
       
     >     
-        <AppController />
+        <SplashScreenController />
     </Provider>
         
       

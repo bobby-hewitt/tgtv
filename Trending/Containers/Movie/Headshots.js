@@ -8,13 +8,15 @@ import {
 } from 'react-native';
 import gs from '../../Styles'
 import {
-  Scale
+  Scale,
+  Timer
 } from '../../Components/Global'
-const Headshots = ({players}) =>  {
+const Headshots = ({players, onHeadshotsTimeout}) =>  {
 
  
   return (
     <View style={[gs.row, styles.playersContainer]}>
+    <Timer onComplete={onHeadshotsTimeout} duration={5}/>
         {players && players.map((item, i) => {
           return(
             <View key={i} style={[styles.playerContainer]}>

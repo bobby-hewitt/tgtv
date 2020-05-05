@@ -12,7 +12,8 @@ const Track = ({updateRecordIndex, image_url, preview_url, toRoom, setGameState,
 	const [ showAnswer, setShowAnswer ] = useState(false)
 	const [ fadeOut, setFadeout ] = useState(false)
 	const translateX = useRef(new Animated.Value(0)).current
-	const voteMargin = useRef(new Animated.Value(24)).current
+	const voteMargin = useRef(new Animated.Value(5)).current
+	const votesMargin = useRef(new Animated.Value(-300)).current
 	const translateY = useRef(new Animated.Value(0)).current
 
 
@@ -41,13 +42,19 @@ const Track = ({updateRecordIndex, image_url, preview_url, toRoom, setGameState,
 		votesLength
 	])
 
-	function translate(){
+	function getPosVal(){
 		const trueIndex = responses.findIndex(r => r.isTrue)
 		let to = 
 			trueIndex=== 0 ? {x: 435, y:270} : 
 			trueIndex=== 1 ? {x: -435, y:270} : 
 			trueIndex=== 2 ? {x: 435, y:-120} : 
 			{x: -435, y:-120} 
+
+		return to
+	}
+
+	function translate(){
+		const to = getPosVal()
 		Animated.parallel([
 			Animated.timing(translateX, {
 		        toValue: to.x,
@@ -55,12 +62,12 @@ const Track = ({updateRecordIndex, image_url, preview_url, toRoom, setGameState,
 		        duration: 500,    
 		      }),
 			Animated.timing(translateY, {
-		        toValue: to.y,
+		        toValue: to.y -100,
 		        useNativeDriver: true,easing:Easing.easeInOut,
 		        duration: 500,    
 		      }),
 			Animated.timing(voteMargin, {
-		        toValue: 100,
+		        toValue: 60,
 		        easing:Easing.easeInOut,
 		        duration: 500,    
 		      })
@@ -81,14 +88,21 @@ const Track = ({updateRecordIndex, image_url, preview_url, toRoom, setGameState,
 				updateRecordIndex()
 			
 			setTimeout(() =>{
-
+			
 				nextTrack()
 			},1000)
 		} else if (showAnswer){
 			console.log('setting fadeout')
 			setTimeout(() =>{
-				
+					const to = getPosVal()
+				Animated.timing(translateY, {
+			        toValue: to.y,
+			        useNativeDriver: true,
+			        easing:Easing.easeInOut,
+			        duration: 500,    
+			      }).start()
 				setFadeout(true)
+			
 			},2000)
 		}
 	}
@@ -112,23 +126,23 @@ const Track = ({updateRecordIndex, image_url, preview_url, toRoom, setGameState,
 			{responses.map((item, i) => {
 				return(
 					
-					<Animated.View  key={i} style={[{transform: [{translateX:item.isTrue ? translateX : 0}, {translateY:item.isTrue ? translateY : 0}]},styles.responseContainer]}>
+					<Animated.View  key={i} style={[{zIndex: item.isTrue ? 100: 0, transform: [{translateX:item.isTrue ? translateX : 0}, {translateY:item.isTrue ? translateY : 0}]},styles.responseContainer]}>
 					
 					<Scale  scaleFrom={1} fillContainer scaleTo={showAnswer ? fadeOut ? 0 : item.isTrue ? 1 : 0 : 1} duration={500} animationComplete={() => correctAnimationComplete(item)}>
-					<View style={[styles.responseInnerContainer, {transform: [{rotate: i % 2 === 0 ? -0.05 : 0.05}]}]}>
+					<View style={[styles.responseInnerContainer, {zIndex: item.isTrue ? 100: 0, transform: [{rotate: i % 2 === 0 ? -0.05 : 0.05}]}]}>
 					
 						<Text  style={[gs.bodycopy, gs.bold, {fontSize:36, fontWeight:'900', textAlign:'center', color:'#101010'}]}>{item.name}</Text>
 						<Text  style={[gs.bodycopy, gs.bold, {fontSize:36, textAlign:'center', color:'#101010', marginTop:12}]}>{item.artist}</Text>
 					</View>
 					{showVotes &&
 							<Scale duration={500} scaleTo={1} animationComplete={votesAnimationComplete}>
-								<View style={styles.votesContainer}>
+								<Animated.View style={{transform:[{translateY: votesMargin}]}, styles.votesContainer}>
 								{votes &&votes.map((vote, j) => {
 									if (vote.index === i){
 										
 										return(
-											<View key={`${i}${j}`} style={styles.voteOuterContainer}>
-											<Animated.View style={[item.isTrue ? {marginTop:voteMargin} : {marginTop:24}, styles.voteContainer]}>
+											<View key={`${i}${j}`} style={[styles.voteOuterContainer]}>
+											<Animated.View style={[item.isTrue ? {marginTop:voteMargin} : {marginTop:5}, styles.voteContainer]}>
 												<Text style={[gs.bodycopy, gs.bold, {fontSize:32, fontWeight:'bold', color:'#101010'}]}>{vote.player.name} </Text>
 											</Animated.View>
 												{item.isTrue && showAnswer &&
@@ -151,7 +165,7 @@ const Track = ({updateRecordIndex, image_url, preview_url, toRoom, setGameState,
 										)
 									}
 								})}
-								</View>
+								</Animated.View>
 							</Scale>
 						}
 
@@ -191,10 +205,13 @@ const styles= StyleSheet.create({
 	},
 	scoreContainerPosition:{
 		position:'absolute',
-		top:20,
+		top:-5,
 		left:'50%',
 		transform:[
+
+			
 			{translateX:'-50%'}
+			
 		]
 		
 	},
@@ -226,13 +243,10 @@ const styles= StyleSheet.create({
 	votesContainer:{
 		width:'120%',
 		marginLeft:'-10%',
-		marginTop:-24,
+		
 		// backgroundColor:'#ff000077',
 
-		position:'absolute',
-		top:'100%',
-		left:0,
-		zIndex:100,
+		zIndex:110,
 		
 		flexDirection:'row',
 		flexWrap:'wrap',

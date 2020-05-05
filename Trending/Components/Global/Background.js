@@ -78,6 +78,7 @@ const Background = (props) =>  {
       
   //   // }
   // },[props.activeGame])
+  // style={[styles.outerContainer, {left: offset, right : offset, height:'100%' }]}
   return (
     <Animated.View style={[styles.outerContainer, {left: offset, right : offset, height:'100%' }]}>
     <Animated.View style={[styles.container, {transform: [{rotate: rotation}]}]}>  

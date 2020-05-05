@@ -42,7 +42,7 @@ const Round = ({question, trackIndex, round, toRoom,players, setGameState, nextT
 				
 			}
 			<View style={styles.recordsContainer}>
-			<Translate fillContainer translateXY={'translateX'} easing={'easeIn'} duration={1000} toVal={recordIndex > question.tracks.length - 1 ?  -1080 : 0}> 
+			<Translate fillContainer translateXY={'translateX'} easing={'easeIn'} duration={1000} fromVal={1080}toVal={(trackIndex < 0) ? 1080: (recordIndex > question.tracks.length - 1) ?  -1080 : 0}> 
 			<View>
 			
 			
@@ -51,7 +51,7 @@ const Round = ({question, trackIndex, round, toRoom,players, setGameState, nextT
 				
 				<View style={{flexDirection:'row'}}>
 				
-				<Translate fillContainer translateXY={'translateX'} easing={'easeInOut'} duration={1000} toVal={recordIndex < question.tracks.length  ? recordIndex * - 110 : (recordIndex-1)* - 110}> 
+				<Translate fillContainer translateXY={'translateX'} easing={'easeInOut'} duration={1000} toVal={recordIndex < question.tracks.length  ? recordIndex * - 90 : (recordIndex-1)* - 90}> 
 				<View style={{flexDirection:'row'}}>
 				{question.tracks && question.tracks.map((item, i )=> {
 					return(
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
 		
 		flexDirection:'row',
 		position:'absolute',
-		left:Dimensions.get('window').width/2 - Dimensions.get('window').width/20 -55 ,
+		left:Dimensions.get('window').width/2 - Dimensions.get('window').width/20 -45 ,
 		bottom:0,
 	},
 	selector:{
@@ -110,13 +110,13 @@ const styles = StyleSheet.create({
 		bottom:-10,
 		
 		backgroundColor:'#fff',
-		width:120,
-		height:120,
+		width:100,
+		height:100,
 		borderRadius:60,
 	},
 	record:{
-		height:100,
-		width:100,
+		height:80,
+		width:80,
 		marginHorizontal:5,
 	},
 	imageContainer:{

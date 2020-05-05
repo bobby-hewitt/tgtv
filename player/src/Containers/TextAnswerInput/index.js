@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react'
-import { TextInput, Button } from 'Components'
+import { TextInput, Button, Header } from 'Components'
 import globalContext from 'Contexts/global'
 import './style.scss'
 
@@ -14,6 +14,7 @@ const TextAnswerInput = (props) => {
 	}	
 	return (
 		<div className="joinContainer">
+		<Header label="What's your lie?" backgroundColor={state.backgroundColor}/>
 			<TextInput value={answer} placeholder={"Your answer"} onChange={(e) => setAnswer(e.target.value)}/>
 			<Button label="Submit"  onClick={onSubmitAnswer} />
 		</div>

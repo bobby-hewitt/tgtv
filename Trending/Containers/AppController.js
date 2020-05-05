@@ -23,6 +23,7 @@ import SongSocket from './Song/SongSocket'
 import MovieGameController from './Movie/MovieGameController'
 import LandingPage from './LandingPage'
 import globalContext from '../Context/global'
+
 import { playBackgroundMusic, stopRemoteSound, stopBackgroundMusic, loadSounds } from '../Helpers/Sound'
 Lint()
 const actions = [
@@ -50,10 +51,13 @@ const AppController = () =>  {
   
   const globalState= useContext(globalContext)
   useEffect(() => {
+
     loadSounds().then(() => {
        // playBackgroundMusic()
 
     })
+
+    
     return () => {
        stopBackgroundMusic()
        stopRemoteSound()

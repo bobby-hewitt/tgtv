@@ -23,7 +23,7 @@ import fallbackLies from '../../Data/fallbackLies'
 const config = {
   maxPlayers: 6,
   minPlayers: 2,
-  maxSuggestions:3,
+  maxSuggestions:5,
 }
 
 
@@ -44,6 +44,7 @@ const SearchGameController = (props) =>  {
   const [ gameState, setGameState] = useState('join')
   const [ questions, setQuestions] = useState([])
   const [ round, setRound] = useState(0)
+  const [ timer, setTimer ] = useState(false)
   useEffect(() => {
     socket.connect()
     console.log('HOST JOINING')
@@ -160,9 +161,9 @@ const SearchGameController = (props) =>  {
     let p = players[index]
     if (gameState === 'submitSuggestions'){
       data.rejoinAt = 'search-suggestions'
-    } else if (gameState === 'round'){
+    } else if (gameState === 'round' || gameState === 'answers' || gameState=== 'votes'){
       if (questions[round].responses.length < players.length ){
-        //find responses
+        
         let response = findPlayerResponse(p)
         if (response) data.rejoinAt = 'waiting'
         else data.rejoinAt = 'text-answer-input'
@@ -208,6 +209,7 @@ const SearchGameController = (props) =>  {
       socket.emit('set-room-waiting')
       setGameState('round') 
       startSpeech('question', {question: questions[round].q, name: questions[round].player.name}, () => {
+        
         sendAnswerInput()
       })
     }
@@ -230,13 +232,13 @@ const SearchGameController = (props) =>  {
     let newQuestions = Object.assign([], questions)
     let foundMatch = false
     for (var i = 0; i < newQuestions[round].responses.length ; i++){
-      if ( data.answer === newQuestions[round].responses[i].answer){
+      if ( data.answer === newQuestions[round].responses[i].answer && newQuestions[round].responses.length < players.length){
         foundMatch = true
         newQuestions[round].responses[i].also.push(data)
         newQuestions = addOurLie(newQuestions, data.player.name)
       }
     }
-    if (!foundMatch){
+    if (!foundMatch && newQuestions[round].responses.length < players.length){
        newQuestions[round].responses.push(data) 
     }
     return newQuestions
@@ -248,6 +250,8 @@ const SearchGameController = (props) =>  {
     data.also = []
     let newQuestions = checkAnswerMatch(data)
     if (newQuestions[round].responses.length === players.length){
+      setGameState('round')
+      setTimer(false)
       addCorrectAnswer(newQuestions)
     } else {
       setQuestions(newQuestions)
@@ -256,28 +260,32 @@ const SearchGameController = (props) =>  {
 
   function submitVote(data){
     let newQuestions = Object.assign([], questions)
-    newQuestions[round].votes.push(data)
-    // if (newQuestions[round].votes.length === players.length){
-      
-    // } else {
+    if (newQuestions[round].votes.length < players.length){
+      newQuestions[round].votes.push(data)
       setQuestions(newQuestions)
-    // }
+    } else {
+      setTimer(false)
+      setGameState('round')
+    }
   }
 
   function voteTimeout(){
+    toRoom({
+      action: 'set-waiting'
+    })
+    setGameState('round')
+    setTimer(false)
     let newQuestions = Object.assign([], questions)
     while(newQuestions[round].votes.length < players.length){
       newQuestions[round].votes.push(false)
     }
-    toRoom({
-      action: 'set-waiting'
-    })
+    
     setQuestions(newQuestions)
   }
 
   function addOurLie(newQuestions, name){
-    const answer = questions[round].a[newQuestions[round].responses.length] ? 
-      questions[round].a[newQuestions[round].responses.length]:
+    const answer = questions[round].a[newQuestions[round].responses.length + 1] ? 
+      questions[round].a[newQuestions[round].responses.length].replace('uk', '').trim():
       fallbackLies[Math.floor(Math.random() * fallbackLies.length -1)]
      newQuestions[round].responses.push({
         answer: answer,
@@ -290,6 +298,11 @@ const SearchGameController = (props) =>  {
   }
 
   function answerTimeout(){
+    toRoom({
+      action: 'set-waiting'
+    })
+    setGameState('round')
+    setTimer(false)
     let newQuestions = Object.assign([], questions)
     while(newQuestions[round].responses.length < players.length){
       newQuestions = addOurLie(newQuestions, 'Bot')
@@ -298,16 +311,33 @@ const SearchGameController = (props) =>  {
   }
 
   function shuffleResposnesAndSendVote(newQuestions){
-     newQuestions[round].responses = shuffle(newQuestions[round].responses)
-    for (var i = 0 ; i<newQuestions[round].responses.length; i++) {
-      newQuestions[round].responses[i].index = i
-    }
-    startSpeech('answers-in', {}, () => {
+        // newQuestions[round].responses = shuffle(newQuestions[round].responses)
+        // for (var i = 0 ; i<newQuestions[round].responses.length; i++) {
+        //   newQuestions[round].responses[i].index = i
+        // }
+        // console.log('responses', newQuestions[round])
+        // setQuestions(newQuestions) 
+        newQuestions[round].responses = shuffle(newQuestions[round].responses)
+        for (var i = 0 ; i<newQuestions[round].responses.length; i++) {
+          newQuestions[round].responses[i].index = i
+        }
+        setQuestions(newQuestions) 
+        startSpeech('answers-in', {}, () => {
+          console.log('SETTING VOTES')
+           setGameState('votes')
+            
+        })
+    
+  }
+
+  function sendVote(){
+    
+    startSpeech('cast-vote', {}, () => {
+      setTimer('votes')
       toRoom({
         action: 'set-vote',
-        options: newQuestions[round].responses
+        options: questions[round].responses
       })
-      setQuestions(newQuestions)
     })
   }
 
@@ -333,6 +363,7 @@ const SearchGameController = (props) =>  {
       isTrue: true
       })
     }
+    
     shuffleResposnesAndSendVote(newQuestions)
 
 
@@ -357,6 +388,8 @@ function shuffle(a) {
 }
 
   function sendAnswerInput(){
+    setTimer('answers')
+    setGameState('answers')
     socket.emit('send-answer-input')
   }
 
@@ -371,27 +404,23 @@ function shuffle(a) {
     socket.emit('host-to-room', data)
   }
 
-  function nextRound(){
-    updateScores()
+  function calculateWhatIsNext(){
+      console.log('NEXT ROUND', round)
+      updateScores()
       if (round === questions.length-1 || round % 2 === 1){   
-        // setRound(round +1)
-        console.log('setting scores')
-        // startSpeech('question', {question: questions[round].q, name: questions[round].player.name}, () => {
-        //   sendAnswerInput()
-        // })
         setGameState('scores')
-      }
-       else {
-        // setGameState('scores')
- const nextRoundIndex = round +1
-      setRound(nextRoundIndex)
-        
-        
+      } else {
+          nextRound()
+      }  
+  }
+
+  function nextRound(){
+    const nextRoundIndex = round +1
+        setRound(nextRoundIndex)
         startSpeech('question', {question: questions[nextRoundIndex].q, name: questions[nextRoundIndex].player.name}, () => {
+          
           sendAnswerInput()
         })
-      }
-    
   }
 
   function findPlayerResponse(player){
@@ -431,6 +460,10 @@ function shuffle(a) {
         }
       }
       if (vote){
+
+        // if (questions[round].responses[vote.index].ourLie ){
+
+        // }
         if (vote.index === correct.index){
           newPlayers[i].goodGuessScore += 200
         }
@@ -457,19 +490,15 @@ function shuffle(a) {
   }
 
   function onRevealComplete(){
-    nextRound()
+    calculateWhatIsNext()
   }
 
   function scoresComplete(){
     if (round === questions.length-1){
       console.log('END OF GAME')
     } else {
-      const nextRoundIndex = round +1
-      setRound(nextRoundIndex)
-      setGameState('round')   
-      startSpeech('question', {question: questions[nextRoundIndex].q, name: questions[nextRoundIndex].player.name}, () => {  
-      sendAnswerInput()
-      })
+      setGameState('round')
+      nextRound()
     }
   }
 
@@ -522,8 +551,12 @@ function shuffle(a) {
             players={players}
           />
         }
-        {gameState === 'round' &&
-          <Round 
+        {(gameState === 'round' || gameState === 'votes' || gameState === 'answers') &&
+           <Round
+            questions={questions}
+            round={round}
+            timer={timer}
+            gameState={gameState}
             onRevealComplete={onRevealComplete}
             answerTimeout={answerTimeout}
             voteTimeout={voteTimeout}
@@ -531,6 +564,7 @@ function shuffle(a) {
             players={players} 
             backgroundColor={globalState.backgroundColor} 
             sendAnswerInput={sendAnswerInput}
+            sendVote={sendVote}
           />
         }
       </View>

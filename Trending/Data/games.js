@@ -1,4 +1,18 @@
 const actions = [
+{
+    "label": "Webheads",
+    // backgroundColor: '#1DB954',
+    backgroundColor: '#4b8cf5',
+
+    // backgroundColor: '#04011f',
+    guruColor: 'green',
+    value: 'search',
+    backgroundImage: require('../assets/images/home/searchBackground.png'),
+    armRotateX: 0,
+    armRotateZ: 0,
+    description: "Think you're tuned in to the world? Prove it in a game of wit and deception",
+    players:'2-6'
+  },
   {
     "label": "Playlist playoff",
     // backgroundColor: '#4285F4',
@@ -12,36 +26,23 @@ const actions = [
  
      armRotateX: 1,
     armRotateZ: 0,
-    description: 'Music knowledge and lightning speed. Can you guess the track? 🎶',
+    description: 'Music knowledge and lightning speed. Can you guess the track?',
     players:'1-6'
 
   },
   {
     "label": "Shoestring studios",
     
-    backgroundColor: '#0b0d0d',
+    backgroundColor: '#040125',
     guruColor: 'red',
     value: 'movie',
     backgroundImage: require('../assets/images/home/movieBackground.png'),
     armRotateZ: 0,
     armRotateX: 0,
-    description: "You're the Writer, Director, Actor and Critic. But Who will get the awards? 🎥",
+    description: "You're the Writer, Director, Actor and Critic. But Who will get the awards?",
     players:'3-6'
   },
-  {
-    "label": "Webheads",
-    backgroundColor: '#1DB954',
-    backgroundColor: '#1f1f1f',
-
-    // backgroundColor: '#04011f',
-    guruColor: 'green',
-    value: 'search',
-    backgroundImage: require('../assets/images/home/searchBackground.png'),
-    armRotateX: 0,
-    armRotateZ: 0,
-    description: "Think you're tuned in to the world? Prove it in a game of wit and deception 🔍",
-    players:'2-6'
-  },
+  
 
 
   

@@ -10,22 +10,25 @@ import gs from '../../Styles'
 const SocresPlayer = ({scaleTo, xTo, yTo, player, position, game, backgroundColor, gameState}) => {
 	
 	const scale = useRef(new Animated.Value(scaleTo)).current
-	const x = useRef(new Animated.Value(xTo)).current
-	const y = useRef(new Animated.Value(yTo)).current
+	const x = useRef(new Animated.Value(xTo-250)).current
+	const y = useRef(new Animated.Value(yTo-250)).current
 
 	useEffect(() => {
 		
 		Animated.parallel([
 			Animated.timing(scale, {
 				toValue: scaleTo,
+				useNativeDriver:true,
 				duration: 500,    
 			}),
 			Animated.timing(x, {
-				toValue: xTo,
+				toValue: xTo-250,
+				useNativeDriver:true,
 				duration: 500,    
 			}),
 			Animated.timing(y, {
-				toValue: yTo,
+				toValue: yTo-250,
+				useNativeDriver:true,
 				duration: 500,    
 			})
 		]).start()
@@ -34,7 +37,7 @@ const SocresPlayer = ({scaleTo, xTo, yTo, player, position, game, backgroundColo
 	}, [scaleTo])	
 
 	return (
-		<Animated.View style={[ styles.outerContainer, {marginLeft: x, marginTop:y, transform:[{translateX:-250}, {translateY: -250}]}]}>
+		<Animated.View style={[ styles.outerContainer, {transform:[{translateX:x}, {translateY: y}]}]}>
 		<Animated.View style={[styles.container,{ borderColor:'#000'}, {transform:[{scale}]}]}>
 			<View style={[styles.position, {backgroundColor:"#fff", borderColor:'#000'}]}>
 				<Text style={{color:'#000', fontSize:50, fontWeight:'bold'}}>{position}</Text>

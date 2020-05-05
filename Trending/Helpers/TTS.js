@@ -10,7 +10,7 @@ export const cancelSpeech =() => {
 
 
  export const startSpeech = (key, params, callback) => {
- 	if (callback) return callback()
+ 	// if (callback) return callback()
  	TTS.stop()
  	TTS.removeEventListener('tts-start', start);
 	TTS.removeEventListener('tts-finish', finish);
@@ -59,8 +59,13 @@ function getScript(key, params){
 			`Complete the search term .... ... ${params.question} ..... `
 		],
 		'answers-in': [
-			`The answers are in... But which one is real?`,
-			`Time to cast your votes. What did people really search foooor?`,
+			`The answers are in... Let's see what we've got.`,
+			`What have we got here then?`,
+			`Ok, what did you all think`,
+		],
+		'cast-vote': [
+			`Which one is the real answer? Cast your votes.. Now.`,
+			`Time to cast your votes.`,
 		],
 		'waiting-for':[
 			`We're waiting for ${params.player} again`,
@@ -108,7 +113,42 @@ function getScript(key, params){
 		'end-of-game':[
 			`Congrats ${params.winner}.... See you next time`,
 			`Annnnd ${params.winner} is our winner.... See you next time`,
-		]
+		],
+		'movie-headshots':[
+			`To get anywhere in this town we need good headshots.  Let's put them together now`
+		],
+		'movie-create-titles':[
+			`Let's come up with some movie titles. Make them hard hitting... The more outrageous the title the better.`
+		],
+		'movie-choose-title':[
+			`I've sent you a few titles. Pick the one you want to make into a movie`
+		],
+		'movie-storyboard':[
+			`Let's start bringing this concept to life. You can submit up to 3 pictures which tell the story of your movie. Be quick, you haven't got long.`
+		],
+		'movie-cast':[
+			`Time to think of the cast. Choose your star and give their character a name`
+		],
+		'movie-presentation':[
+			`It's time for the premiers! .......  Each of you will get to present your movies to the judges. Really sell the concept.. It's the only way you'll win awards.`
+		],
+		'movie-presentation-player-first':[
+			`first up we have...... ${params ? params.name : ''}`
+		],
+		'movie-presentation-player':[
+			`next up. it's...... ${params ? params.name : ''}`
+		],
+		'movie-presentation-player-last':[
+			`Last but not least we have...... ${params ? params.name : ''}`
+		],
+		'movie-review':[
+			`What a show.... ... Judges, submit your reviews.`
+		],
+		'movie-review-vote':[
+			`You've seen the movie... You've read the reviews. Give the best ones a like and then we'll move on`,
+			`Pick your favorite reviews and we'll move on.`,
+		],
+
 	}
 	let selection = speech[key]
 	let item = selection[getRandomIndex(selection.length)]

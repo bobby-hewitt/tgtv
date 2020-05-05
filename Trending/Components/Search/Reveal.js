@@ -8,14 +8,18 @@ import {
 import gs from '../../Styles'
 import Option from './Option'
 import BullsEye from './BullsEye'
-import { PlayerResponses, Scale } from '../Global'
+import { PlayerResponses, Scale, Translate } from '../Global'
 import {playSound } from '../../Helpers/Sound'
 import {startSpeech } from '../../Helpers/TTS'
 
 const RevealOption = ({votes, responses, index, createPlayersText, callback, isTrue,also, players}) => {
 	const [ showVotes, setShowVotes] = useState(false)
 	const [ showResult, setShowResult] = useState(false)
-	
+	const [ isVisible, setIsVisible ] = useState(true)
+	function onScaleComplete(){
+		callback()
+	}
+
 	
 	function animateResponsesComplete(){
 		setShowResult(true)
@@ -32,10 +36,10 @@ const RevealOption = ({votes, responses, index, createPlayersText, callback, isT
 					callback()
 				})
 			} else {
-					callback()
+					setIsVisible(false)
 			}
 			
-		},isTrue ? 3000 : 1200)
+		},3000)
 	}
 
 	function createResultText(){
@@ -50,25 +54,36 @@ const RevealOption = ({votes, responses, index, createPlayersText, callback, isT
 
 	}
 	return(
-		<React.Fragment>
+		
+		<Translate toVal={isVisible ? 0 : isTrue ? 0 : 1000} fromVal={0} transformOrigin="top" duration={300} animationComplete={() => {if (!isVisible) onScaleComplete()}}>
+		
+		<View style={{width:'100%', height:'100%', alignItems:'center'}}>
 			<Option {...responses[index]} i={0} animationComplete={() => setShowVotes(true)}/>
-			<View style={[styles.vSpacing]} />
+			<View style={[]} />
 			{showVotes &&
 				<PlayerResponses responses={votes} animateVisibleComplete={animateResponsesComplete} inline/>
 			}
 			{!showVotes &&
 				<View style={{height:100}}/>
 			}
-			<View style={[styles.vSpacing]} />
+			<View style={{marginTop:votes.length > 0 ? 60 : 0}} />
 			{showResult &&
 				<Scale duration={500} scaleTo={1} >
+				<View style={styles.resultOuterContainer}>
 				<Text style={[gs.subtitle, gs.bold, {color:"#fff"}]}>{createResultText()}</Text>
+				</View>
 				</Scale>
 			}
 			{!showResult &&
+				<View style={[styles.resultOuterContainer, {backgroundColor:'transparent'}]}>
 				<Text style={[gs.subtitle, gs.bold, {color:"#fff", fontWeight: '800'}]}>{ ' '} </Text>
+				</View>
 			}
-		</React.Fragment>
+			</View>
+			
+			</Translate>
+			
+		
 	)
 }
 
@@ -163,8 +178,16 @@ const styles = StyleSheet.create({
 		flexDirection:'row',
 		marginBottom:60,
 	},
+	resultOuterContainer:{
+		transform:[
+			{rotate:-0.05}
+		],
+		backgroundColor:'#000',
+		padding:20,
+		borderRadius:20
+	},
 	vSpacing:{
-		marginVertical:24,
+		marginVertical:60,
 	},
 	wordContainer:{
 		padding:12,
