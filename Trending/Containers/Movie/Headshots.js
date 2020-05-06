@@ -16,7 +16,7 @@ const Headshots = ({players, onHeadshotsTimeout}) =>  {
  
   return (
     <View style={[gs.row, styles.playersContainer]}>
-    <Timer onComplete={onHeadshotsTimeout} duration={5}/>
+    <Timer onComplete={onHeadshotsTimeout} duration={45}/>
         {players && players.map((item, i) => {
           return(
             <View key={i} style={[styles.playerContainer]}>

@@ -21,7 +21,7 @@ import { Players, RoomCode, RoomCodeIndicator } from '../../Components/Global'
 
 import globalContext from '../../Context/global'
 import Round from './Round'
-
+const colors = [ "#f6d55c","#3caea3", "#3caea3","#f6d55c",]
 const config = {
   maxPlayers: 6,
   minPlayers: 1,
@@ -222,7 +222,7 @@ const SongGameController = ({socket, stopBackgroundMusic}) =>  {
     newQuestions.push(data)
     setQuestions(newQuestions)
     if (newQuestions.length >= config.maxSuggestions){
-      
+
       socket.emit('set-room-waiting')
        startSpeech('songs-suggestions-complete', {}, () => {
          
@@ -374,7 +374,7 @@ const SongGameController = ({socket, stopBackgroundMusic}) =>  {
           
       
         {(gameState === 'join' || gameState === 'instructions') &&
-          <Join colors={["#f6d55c", '#ed553b',"#3caea3"]} dominantColor="#ffffff" recessiveColor="#3caea3"/>
+          <Join colors={colors} dominantColor="#ffffff" recessiveColor="#3caea3"/>
         }
     
         {gameState === 'instructions' &&
@@ -384,7 +384,7 @@ const SongGameController = ({socket, stopBackgroundMusic}) =>  {
           <SubmitSuggestions maxSuggestions={config.maxSuggestions} questions={questions} limit={config.maxSuggestions}/>
         }
         {(gameState === 'round' ||gameState === 'reveal') &&
-          <Round round={round} toRoom={toRoom}  setGameState={(n) => setGameState(n)}config={config} gameState={gameState}nextTrack={nextTrack} players={players}sendResponses={sendResponses} question={questions[round]} trackIndex={trackIndex}/>
+          <Round round={round} toRoom={toRoom} colors={colors} setGameState={(n) => setGameState(n)}config={config} gameState={gameState}nextTrack={nextTrack} players={players}sendResponses={sendResponses} question={questions[round]} trackIndex={trackIndex}/>
         }
         {(gameState === 'scores' || gameState === 'scores-updated' || gameState === 'end') &&
           <Scores 

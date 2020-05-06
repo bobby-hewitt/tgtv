@@ -65,12 +65,20 @@ function playlists(data){
 		authenticate()
 		.then((token) => {
 			if (search){
-				searchPlaylists(token, search).then((data) => {
+				searchPlaylists(token, search)
+				.then((data) => {
 					resolve(data.items.filter(i => i.tracks.total >=5))
 				})
+				.catch(() => {
+					reject()
+				})
 			} else {
-				getPlaylists(token, category).then((data) => {
+				getPlaylists(token, category)
+				.then((data) => {
 					resolve(data.items.filter(i => i.tracks.total >=5))
+				})
+				.catch(() => {
+					reject()
 				})
 			} 
 		})

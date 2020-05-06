@@ -66,9 +66,9 @@ const styles = StyleSheet.create({
   },
   image:{
     borderRadius:20,
-    margin:-15,
-     width:300,
-     height:300,
+    margin:0,
+     width:290,
+     height:290,
   },
 
 });

@@ -8,7 +8,7 @@ const Instructions = (props) => {
 			<div className="anglesContainer">
 			{angles.map((angle, i) => {
 				return(
-					<div key={i} className="testTriangle" style={{transform: 'rotate(' + (360 /angles.length) * i+ 'deg) translate(-100%, -0%)'}}/>
+					<div key={i} className="testTriangle" style={{transform: 'rotate(' + (40 * i)+ 'deg) translate(-100%, -0%)'}}/>
 				)
 			})}
 			</div>

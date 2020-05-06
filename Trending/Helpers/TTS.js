@@ -10,7 +10,7 @@ export const cancelSpeech =() => {
 
 
  export const startSpeech = (key, params, callback) => {
- 	// if (callback) return callback()
+ 	if (callback) return callback()
  	TTS.stop()
  	TTS.removeEventListener('tts-start', start);
 	TTS.removeEventListener('tts-finish', finish);
@@ -115,7 +115,7 @@ function getScript(key, params){
 			`Annnnd ${params.winner} is our winner.... See you next time`,
 		],
 		'movie-headshots':[
-			`To get anywhere in this town we need good headshots.  Let's put them together now`
+			`To get anywhere in this town we need good head shots.  Let's put them together now`
 		],
 		'movie-create-titles':[
 			`Let's come up with some movie titles. Make them hard hitting... The more outrageous the title the better.`

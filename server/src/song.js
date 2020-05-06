@@ -19,9 +19,14 @@ exports.sendCategoriesPlayer = (socket, data) => {
 exports.sendPlaylists = (socket, data) => {
 	console.log('lookin', data, socket.id)
 	Spotify.playlists(data).then((playlists) => {
+
 		console.log('got playlists', playlists[0])
 		socket.to(socket.id).emit('choose-playlist', playlists)
 		socket.emit('choose-playlist', playlists)
+	})
+	.catch(() => {
+		socket.emit('error-getting-playlist')
+		
 	})
 } 
 

@@ -8,27 +8,71 @@
 	margin:0;
 	position: relative;
 	.PlaylistContainer{
-		border-radius: 10px;
-		box-shadow: 0 0 12px rgba(0,0,0,0.5);
-		background-size:cover;
-		background-position:center;
+		
+		
+		
 		position: absolute;
 		top:16px;
 		bottom:16px;
 		left:16px;
 		right:16px;
 		overflow: hidden;
+		.playlistImage{
+			border-radius: 10px;
+			width:100%;
+			height:100%;
+			background-size:cover;
+			background-position:center;
+			transform: scale(0);
+			opacity: 0;
+			-webkit-animation-name: scale; 
+			-webkit-animation-duration: 0.6s; 
+			animation-name: scale;
+			animation-duration: 0.6s; 
+			animation-fill-mode:forwards;
+			-webkit-animation-fill-mode:forwards;
+			border:4px solid white;
+			box-sizing:border-box;
+			
+		}
 		&.selected{
 			user-select:none;
 			pointer-events: none;
 		}
 		.overlay{
 			width:100%;
+			border-radius: 10px;
 			height:100%;
 			background:rgba(0,0,0,0.5);
 		}
+		&.placeholder{
+			// background:#101010;
+		}
 		
 	}
+
 }
 
 
+
+@-webkit-keyframes scale {
+  0% {
+  	transform: scale(0);
+  	opacity:0;
+  }
+  100% {
+  	transform: scale(1);
+  	opacity:1;
+  }
+}
+
+@keyframes scale {
+  0% {
+  	transform: scale(0);
+  	opacity:0;
+  }
+  100% {
+  	transform: scale(1);
+  	opacity:1;
+  }
+}

@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react'
-import { TextInput, Button, Header } from 'Components'
+import { TextInput, Button, Header, AnimateIn } from 'Components'
 import globalContext from 'Contexts/global'
 import './style.scss'
 
@@ -41,9 +41,11 @@ const Join = (props) => {
 	return (
 		<div className="joinContainer">
 			<Header label="Join game" backgroundColor={state.backgroundColor } />
+			<AnimateIn>
 			<TextInput value={name} placeholder={"Name"} onChange={(e) => setName(e.target.value)}/>
 			<TextInput value={room} placeholder={"Room"} onChange={(e) => setRoom(e.target.value.toUpperCase())}/>
 			<Button label="Play" onClick={onJoin} />
+			</AnimateIn>
 		</div>
 	)
     

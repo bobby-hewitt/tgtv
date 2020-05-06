@@ -16,7 +16,7 @@ import { Track } from '../../Components/Song'
 import {startSpeech} from '../../Helpers/TTS'
 
 
-const Round = ({question, trackIndex, round, toRoom,players, setGameState, nextTrack,config, gameState, sendResponses}) => {
+const Round = ({question, trackIndex, colors,round, toRoom,players, setGameState, nextTrack,config, gameState, sendResponses}) => {
 	const [recordIndex, setRecordIndex ] = useState(0)
 	useEffect(() => {
 		console.log('question', question)
@@ -77,7 +77,7 @@ const Round = ({question, trackIndex, round, toRoom,players, setGameState, nextT
 				if(i === trackIndex && trackIndex >= 0 && trackIndex < config.maxTracks){
 					return(
 						
-						<Track tracksLength={question.tracks.length}recordIndex={recordIndex} updateRecordIndex={updateRecordIndex}key={i}toRoom={toRoom} {...item} setGameState={setGameState } gameState={gameState} sendResponses={sendResponses} nextTrack={nextTrack} votes={question.tracks[trackIndex].votes} votesLength={question.tracks[trackIndex].votes.length} playersLength={players.length}/>
+						<Track colors={colors}tracksLength={question.tracks.length}recordIndex={recordIndex} updateRecordIndex={updateRecordIndex}key={i}toRoom={toRoom} {...item} setGameState={setGameState } gameState={gameState} sendResponses={sendResponses} nextTrack={nextTrack} votes={question.tracks[trackIndex].votes} votesLength={question.tracks[trackIndex].votes.length} playersLength={players.length}/>
 						
 					)
 				}

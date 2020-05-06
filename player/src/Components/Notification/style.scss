@@ -9,16 +9,14 @@
   transition:all 0.3s ease;
   .notificationContainer{
     position: relative;
-    display: flex;
+    // display: flex;
     flex-direction: column;
     width:80vw;
-    
     max-width: 300px;
-    
     position:fixed;
-    top:50%;
+    top:30%;
     left:50%;
-    transform:translate(-50%, -50%) scale(0);
+    transform:translateX(-50%) scale(0);
     background:#fff;
     border-radius: 10px;
     transition:all 0.3s ease;
@@ -38,7 +36,7 @@
       font-weight: bold;
     }
     .subtitle{
-      margin-top:12px;
+        margin-top:12px;
       text-align: center;
       font-size:16px;
 
@@ -51,7 +49,6 @@
         display: flex;
         flex-direction: row;
       .notificationAction{
-        
         padding: 4px 12px;
         flex:1;
         height:30px;
@@ -69,10 +66,10 @@
 
   }
   &.show{
-    background:rgba(0,0,0,0.5);
+    background:rgba(0,0,0,0.75);
     pointer-events: auto;
     .notificationContainer{
-      transform:translate(-50%, -50%) scale(1);
+      transform:translateX(-50%) scale(1);
     }
   }
 }

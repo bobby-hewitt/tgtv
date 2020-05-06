@@ -3,7 +3,7 @@ import globalContext from 'Contexts/global'
 import './style.scss'
 import Button from '../Button'
 import SignaturePad from 'signature_pad'
-
+import AnimateIn from '../AnimateIn'
 
 const colors = [
   '#000000','#ffffff','#ea2626','#42b549','#3094c3',
@@ -64,6 +64,7 @@ const Drawing = (props) => {
 
  
   return (
+    <AnimateIn>
   	<div>
   	<canvas ref={canvas}  width={windowWidth} height={windowWidth}/>
   	<div className="colorsContainer">
@@ -87,6 +88,7 @@ const Drawing = (props) => {
     <Button label="Submit" noMargin onClick={onSubmit} />
 	
   	</div>
+    </AnimateIn>
   	)
 
 }

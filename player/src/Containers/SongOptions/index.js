@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react'
 import { navigate } from 'hookrouter'
-import { TextInput, Button, Scrollable, Header } from 'Components'
+import { TextInput, Button, Scrollable, Header, AnimateIn } from 'Components'
 import globalContext from 'Contexts/global'
 import './style.scss'
 import suggestions from 'Data/searchSuggestions'
@@ -18,7 +18,9 @@ const Join = (props) => {
 	return (
 		<div>
 		<Header label="Which one?" backgroundColor={state.backgroundColor } />
+		<AnimateIn>
 		<Scrollable>
+		
 		<div className="songOptionsContainer">
 			{state.ballot && state.ballot.map((item, i) => {
 				return(
@@ -29,7 +31,9 @@ const Join = (props) => {
 				)
 			})}
 		</div>
+
 		</Scrollable>
+		</AnimateIn>
 		</div>
 	)
     

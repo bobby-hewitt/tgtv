@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Provider } from "./Contexts/global";
 import {useRoutes, navigate} from 'hookrouter';
-import { Join, NotFound, WaitingStart, Waiting, Bullseye, CreateHeadShot, MovieReview, ReviewVote, MoviePresentation, CreateStoryBoard, SearchSuggestions, ChooseStar, MovieSuggestions, ChooseTitle, TextAnswerInput, Vote, End, SongSuggestions, SongOptions, Drawing} from 'Containers'
+import { Join, NotFound, WaitingStart, Waiting, Bullseye, TransitionContainer, CreateHeadShot, MovieReview, ReviewVote, MoviePresentation, CreateStoryBoard, SearchSuggestions, ChooseStar, MovieSuggestions, ChooseTitle, TextAnswerInput, Vote, End, SongSuggestions, SongOptions, Drawing} from 'Containers'
 import { Background, Notification } from 'Components'
 import openSocket from 'socket.io-client'
 import './App.scss'
@@ -76,6 +76,7 @@ const App = props => {
     socket.on('send-movie-review', sendMovieReview)
     socket.on('vote-on-review', voteOnReview)
     socket.on('search-suggestion-error', searchSuggestionError)
+    socket.on('error-getting-playlist', errorGettingPlaylist)
     return  () => {
       socket.removeListener('connect', socketConnection);
       socket.removeListener('error-joining', errorJoining)
@@ -103,6 +104,7 @@ const App = props => {
       socket.removeListener('send-movie-review', sendMovieReview)
       socket.removeListener('vote-on-review', voteOnReview)
       socket.removeListener('search-suggestion-error', searchSuggestionError)
+      socket.removeListener('error-getting-playlist', errorGettingPlaylist)
     }
   })
 
@@ -222,7 +224,8 @@ const App = props => {
   }
 
   function choosePlaylist(data){
-    console.log('choosing')
+    
+
     setPlaylists(data)
     if (window.location.pathname !== '/song-suggestions'){
       navigate('/song-suggestions')
@@ -274,7 +277,7 @@ const App = props => {
 
     setLoading(false)
     console.log('success joining', data)
-    setBackgroundColor(data.backgroundColor)
+    // setBackgroundColor(data.backgroundColor)
     setMe(data)
     setReadyToStartGame(data.allowStartGame)
     window.localStorage.tgme = JSON.stringify(data)
@@ -329,6 +332,23 @@ const App = props => {
          {
            label: 'Ok',
            action: () => setPopup(false),
+         }
+       ]
+   })
+  }
+
+  function errorGettingPlaylist(data){
+    setLoading(false)
+    setPopup({
+     title: 'Oh no!',
+       subtitle: "We couldn't find any playlists here",
+       actions: [
+         {
+           label: 'Ok',
+           action: () => {
+             setPopup(false)
+            setPlaylists(false)
+          },
          }
        ]
    })
@@ -432,7 +452,7 @@ const App = props => {
           ballot,
         }}
       >
-      <Background backgroundColor={backgroundColor}/>
+      <Background backgroundColor={'#040125'}/>
       <div className="appContentContainer">
       
       { routeResult || <NotFound />}

@@ -3,11 +3,12 @@ import globalContext from 'Contexts/global'
 
 import './style.scss'
 
-import { Playlist, TextInput, Scrollable, Header, SongCategory } from 'Components'
-
+import { Playlist, TextInput, Scrollable, Header, SongCategory, AnimateIn } from 'Components'
+const colors = ["#f6d55c", '#ed553b',"#3caea3"]
 const Home = (props) => {
 	const state = useContext(globalContext)
 	const [ search , setSearch ] = useState('')
+	const [ isLoading , setIsLoading ] = useState(false)
 
 	useEffect(() => {
 		if (!state.songCategories){
@@ -19,8 +20,21 @@ const Home = (props) => {
 		}
 	},[])
 
+	useEffect(() => {
+		if (state.popup && state.popup.subtitle === "We couldn't find any playlists here"){
+			setIsLoading(false)
+		}
+	},[state.popup])
+
+	useEffect(() => {
+		if (state.playlists.length){
+			setIsLoading(false)
+		}
+	}, [state.playlists])
+
 	function getPlaylists(e){
 		if (e) e.persist()
+		setIsLoading(true)
 		state.setPlaylists([])
 		setSearch(e.target.value)
 		clearTimeout(window.loadTimeout)
@@ -31,35 +45,66 @@ const Home = (props) => {
 		
 	}
 
+
 	
 	return (
 		<div className="playlistsContainer">
 		<Header label="Choose a playlist" backgroundColor={state.backgroundColor } />
+		<AnimateIn>
 		<div className="playlistSearchContainer">
-				<TextInput value={search} noMarginBottom  placeholder="Search for a playlist" onChange={(e) => getPlaylists(e)}/>
+				<TextInput isSong value={search} noMarginBottom  placeholder="Search for a playlist" onChange={(e) => getPlaylists(e)}/>
 			</div>
 			<div className="playlistsInnerContainer">
-				{!state.playlists && 
+				{!state.playlists && !isLoading && 
 					<Scrollable>
 						{state.songCategories && state.songCategories.map((item, i) => {
+							
+							
+							const color = colors[i % colors.length]	
 							return(
-								<SongCategory {...item} index={i} key={i}/>
+								<SongCategory delay={i * 50} setIsLoading={setIsLoading}{...item} index={i} key={i}/>
 							)
+							
 						})}
 					</Scrollable>
 				}
-				{state.playlists && state.songCategories &&
+				{state.playlists && state.songCategories && !isLoading && 
 					<Scrollable>
-					<SongCategory {...state.songCategories[0]} name="Back to categories" onClick={() => state.setPlaylists(false)}/>
+					<SongCategory delay={0} color={'#fff'} {...state.songCategories[0]} name="Back to categories" onClick={() => {
+						setIsLoading(false)
+						setSearch('')
+						state.setPlaylists(false)
+					}}/>
+
 					{state.playlists.length > 0 && state.playlists.map((item, i) => {
-						return(
-							<Playlist {...item} index={i } key={i}/>
-						)
+							
+							 return(
+								<Playlist {...item} index={i } key={i}/>
+							)
+						
 					})}
 					</Scrollable>
 				}
+				{isLoading &&
+					<div className="songSuggestionLoadingContainer">
+						<SongCategory delay={0} color={'#fff'}{...state.songCategories[0]} name="Back to categories" onClick={() => {
+							state.setPlaylists(false)
+							setIsLoading(false)
+							setSearch('')
+						}}/>
+						<Playlist placeholder/>
+						<Playlist placeholder/>
+						<Playlist placeholder/>
+						<Playlist placeholder/>
+						<Playlist placeholder/>
+						<Playlist placeholder/>
+						
+					</div>
+				}
 			</div>
+			</AnimateIn>
 		</div>
+
 	)
     
 }

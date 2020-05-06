@@ -298,8 +298,10 @@ const Movie = (props) =>  {
     for (var i = 0; i < newPlayers.length; i++){
       if (newPlayers[i].name === data.player.name){
         newPlayers[i].headshot = data.headshot
+        console.log(newPlayers)
       }
     }
+
     setPlayers(newPlayers)
     let isComplete = checkSubmissions('headshot', 0)
     if (isComplete){

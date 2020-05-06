@@ -6,7 +6,7 @@ import gs from '../../Styles'
 import { playRemoteSound, stopRemoteSound } from '../../Helpers/Sound'
 import { Scale, Timer, Translate } from '../Global'
 import globalContext from '../../Context/global'
-const Track = ({updateRecordIndex, image_url, preview_url, toRoom, setGameState, sendResponses, tracksLength, recordIndex, gameState, artist, nextTrack, votesLength, playersLength, votes, name, responses, artistResponses, nameResponses}) => {
+const Track = ({updateRecordIndex, image_url, preview_url, colors, toRoom, setGameState, sendResponses, tracksLength, recordIndex, gameState, artist, nextTrack, votesLength, playersLength, votes, name, responses, artistResponses, nameResponses}) => {
 	const globalState = useContext(globalContext)
 	const [ showVotes, setShowVotes ] = useState(false)
 	const [ showAnswer, setShowAnswer ] = useState(false)

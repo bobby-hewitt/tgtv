@@ -1,0 +1,41 @@
+.transitionContainer{
+
+	-webkit-animation-name: animateIn; 
+			-webkit-animation-duration: 0.3s; 
+			animation-name: animateIn;
+			animation-duration: 0.3s; 
+			animation-fill-mode:forwards;
+			-webkit-animation-fill-mode:forwards;
+}
+
+
+
+@-webkit-keyframes animateIn {
+  0% {
+  	transform: translateY(-100vh);
+  	opacity:0;
+  }
+     80%{
+    transform: translateY(3vh);
+    
+  }
+  100% {
+  	transform: translateY(0);
+  	opacity:1;
+  }
+}
+
+@keyframes animateIn {
+  0% {
+  	transform: translateY(-100vh);
+  	opacity:0;
+  }
+  80%{
+    transform: translateY(3vh);
+    
+  }
+  100% {
+  	transform: translateY(0);
+  	opacity:1;
+  }
+}
