@@ -15,6 +15,7 @@ const Timer = ({duration, onComplete}) => {
 
     // save intervalId to clear the interval when the
     // component re-renders
+    	clearTimeout(intervalId);
     const intervalId = setTimeout(() => {
       setTimeLeft(timeLeft - 1);
       if (timeLeft <= 1){

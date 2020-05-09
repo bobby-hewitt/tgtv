@@ -11,35 +11,43 @@ import BullsEye from './BullsEye'
 import { PlayerResponses, Scale, Translate } from '../Global'
 import {playSound } from '../../Helpers/Sound'
 import {startSpeech } from '../../Helpers/TTS'
-
-const RevealOption = ({votes, responses, index, createPlayersText, callback, isTrue,also, players}) => {
+import Score from './Score'
+const RevealOption = ({votes, round, responses, index, createPlayersText, colors, callback, isTrue,also, players}) => {
 	const [ showVotes, setShowVotes] = useState(false)
 	const [ showResult, setShowResult] = useState(false)
 	const [ isVisible, setIsVisible ] = useState(true)
+	const [ showResultScore, setShowResultScore ] = useState(false)
+
+	const multiplier = round < 2 ? 1 : round < 4 ? 2 : 3
+	
 	function onScaleComplete(){
 		callback()
 	}
 
 	
 	function animateResponsesComplete(){
+		setTimeout(() => {
+
+
 		setShowResult(true)
-		if (isTrue && votes.length) playSound('tada')
-		else if (isTrue) playSound('fail')
-		setTimeout(( ) => {
-			if (isTrue){
-				let comment = votes.length === players.length ? 'question-comment-all-correct' : 
-						votes.length > 1 ? 'question-comment-some-correct' : 
-						votes.length === 1 ? 'question-comment-one-correct' : 
-						'question-comment-none-correct'
-			
-				startSpeech(comment, {player: votes[0] ? votes[0].player.name : ''}, () => {
-					callback()
-				})
-			} else {
-					setIsVisible(false)
-			}
-			
-		},3000)
+			if (isTrue && votes.length) playSound('tada')
+			else if (isTrue) playSound('fail')
+			setTimeout(( ) => {
+				if (isTrue){
+					let comment = votes.length === players.length ? 'question-comment-all-correct' : 
+							votes.length > 1 ? 'question-comment-some-correct' : 
+							votes.length === 1 ? 'question-comment-one-correct' : 
+							'question-comment-none-correct'
+				
+					startSpeech(comment, {player: votes[0] ? votes[0].player.name : ''}, () => {
+						callback()
+					})
+				} else {
+						setIsVisible(false)
+				}
+				
+			},3000)
+		},1000)
 	}
 
 	function createResultText(){
@@ -51,31 +59,55 @@ const RevealOption = ({votes, responses, index, createPlayersText, callback, isT
 				
 			' ':
 		' '
+	}
 
+	function createResultColor(){
+		return responses[index] ? 
+			responses[index].isTrue ? '#34a853' : 
+			responses[index].player ? "#000000" : 
+				responses[index].ourLie ? '#ea4335' : 
+				
+			"#000000":
+		"#000000"
 	}
 	return(
 		
 		<Translate toVal={isVisible ? 0 : isTrue ? 0 : 1000} fromVal={0} transformOrigin="top" duration={300} animationComplete={() => {if (!isVisible) onScaleComplete()}}>
 		
 		<View style={{width:'100%', height:'100%', alignItems:'center'}}>
-			<Option {...responses[index]} i={0} animationComplete={() => setShowVotes(true)}/>
+			<Option {...responses[index]} color={colors ? colors[responses[index].index % colors.length] : '#333'} i={0} animationComplete={() => setShowVotes(true)}/>
 			<View style={[]} />
 			{showVotes &&
-				<PlayerResponses responses={votes} animateVisibleComplete={animateResponsesComplete} inline/>
+				<View style={{position:'relative'}}>
+				<PlayerResponses colors={colors} responses={votes} animateVisibleComplete={animateResponsesComplete} inline/>
+				{responses[index].isTrue && showResultScore && votes && votes.length > 0 &&
+					<Score score={200 * multiplier} backgroundColor={'#000'}/>
+				}
+				</View>
 			}
 			{!showVotes &&
 				<View style={{height:100}}/>
 			}
-			<View style={{marginTop:votes.length > 0 ? 60 : 0}} />
+			<View style={{marginTop:votes.length > 0 ? 80 : 0}} />
 			{showResult &&
-				<Scale duration={500} scaleTo={1} >
-				<View style={styles.resultOuterContainer}>
-				<Text style={[gs.subtitle, gs.bold, {color:"#fff"}]}>{createResultText()}</Text>
-				</View>
+				<Scale duration={500} scaleFrom={10} scaleTo={1} animationComplete={() => {
+					setShowResultScore(true)
+					
+				}}>
+					<View style={{width:'100%'}}>
+					<View style={[styles.resultOuterContainer, {borderColor:createResultColor()}]}>
+						<Text style={[gs.subtitle, gs.bold, {color:createResultColor()}]}>{createResultText()}</Text>
+					</View>
+					
+					</View>
+					{showResultScore && responses[index].player && !responses[index].isTrue && !responses[index].ourLie &&
+						<Score score={multiplier * responses.length * 100 } backgroundColor={createResultColor()}/>
+					}
 				</Scale>
+
 			}
 			{!showResult &&
-				<View style={[styles.resultOuterContainer, {backgroundColor:'transparent'}]}>
+				<View style={[styles.resultOuterContainer, {borderColor:'transparent', backgroundColor:'transparent'}]}>
 				<Text style={[gs.subtitle, gs.bold, {color:"#fff", fontWeight: '800'}]}>{ ' '} </Text>
 				</View>
 			}
@@ -87,7 +119,7 @@ const RevealOption = ({votes, responses, index, createPlayersText, callback, isT
 	)
 }
 
-const Reveal = ({responses, votes, onComplete, players}) => {
+const Reveal = ({round, responses, votes, colors, onComplete, players}) => {
 	const [filteredResponses, setFilteredResponses] = useState(filterResponses())
 	const [filteredVotes, setFilteredVotes] = useState(filterVotes(0, true))
 	const [index, setIndex] = useState(0)
@@ -157,7 +189,7 @@ const Reveal = ({responses, votes, onComplete, players}) => {
 			{filteredResponses && filteredResponses.map((item, i) => {
 				if (index !== i) return <View key={i}/>
 				return(
-					<RevealOption createPlayersText={createPlayersText} key={i} isTrue={item.isTrue} players={players}callback={setNext}votes={filteredVotes} responses={filteredResponses} index={index}/>
+					<RevealOption round={round} colors={colors} createPlayersText={createPlayersText} key={i} isTrue={item.isTrue} players={players}callback={setNext}votes={filteredVotes} responses={filteredResponses} index={index}/>
 					
 				)
 			})}
@@ -180,9 +212,12 @@ const styles = StyleSheet.create({
 	},
 	resultOuterContainer:{
 		transform:[
-			{rotate:-0.05}
+
+			{rotate:-0.05},
+			
 		],
-		backgroundColor:'#000',
+		borderWidth:10,
+		backgroundColor:'#fff',
 		padding:20,
 		borderRadius:20
 	},

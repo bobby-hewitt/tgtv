@@ -11,37 +11,54 @@ import Scale from './Scale'
 import {playSound } from '../../Helpers/Sound'
 
 
-const PlayerResponses = ({responses, animateVisibleComplete, inline}) => {
-	const [visibleIndex, setVisibleIndex] = useState(animateVisibleComplete ? 0 : 8)
+const PlayerResponses = ({responses, colors, animateVisibleComplete, inline}) => {
+	// const [visibleIndex, setVisibleIndex] = useState(animateVisibleComplete ? 0 : 8)
+	const [visibleIndex, setVisibleIndex] = useState(0)
 	useEffect(() => {
-		let timeout
-		if (animateVisibleComplete && visibleIndex < responses.length)	{
-			 timeout = setTimeout(() => {
+		// let timeout
+		// if (animateVisibleComplete && visibleIndex < responses.length)	{
+		// 	 timeout = setTimeout(() => {
 			 	
-				setVisibleIndex(visibleIndex + 1)
-			},150)
-		} else if (animateVisibleComplete){
-			 timeout = setTimeout(() => {
-			animateVisibleComplete()
-		},1200)
-		}
-		return () => {
-			clearTimeout(timeout)
+		// 		setVisibleIndex(visibleIndex + 1)
+		// 	},150)
+		// } else if (animateVisibleComplete){
+		// 	 timeout = setTimeout(() => {
+		// 	animateVisibleComplete()
+		// },1200)
+		// }
+		// return () => {
+		// 	clearTimeout(timeout)
+		// }
+		if (responses.length < 1){
+			setTimeout(() => {
+				animateVisibleComplete()
+			},1200)
+			
 		}
 	}, [visibleIndex])
+
+	function callback(i){
+		setVisibleIndex(visibleIndex + 1)
+		if (visibleIndex >= responses.length-1){
+			animateVisibleComplete()
+		}
+
+	}
 
 
 
 	return(
 		<Animated.View style={[inline ? styles.playersContainerInline : styles.playersContainer]}>
 			{responses && responses.map((item, i) => {
+				
 				return(
-					<Scale key={i} scaleTo={i < visibleIndex ? 1 : 0} animationComplete={() => { if (i < visibleIndex) playSound('thud')}}>
-						<View  style={[styles.playerContainer]}>
+					<Scale key={i} scaleTo={i <= visibleIndex ? 1 : 0}  duration={250} scaleFrom={0} animationComplete={() => { callback()}}>
+						<View  style={[styles.playerContainer, {borderColor: colors ? colors[i % colors.length] : '#333', transform: [{rotate: i % 2 === 1 ? -0.05 : 0.05}]}]}>
 							<Text style={[gs.bodycopy, gs.bold, {fontSize:40, fontWeight:'bold', color:'#101010'}]}>{item.player ? item.player.name : item.falseName}</Text>
 						</View>
 					</Scale>
 				)
+				
 			})}
 		</Animated.View>
 	)

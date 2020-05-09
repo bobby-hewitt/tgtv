@@ -7,19 +7,23 @@ import {
   Image,
   Text,
 } from 'react-native';
+import AnimatedText from './AnimatedText'
 import gs from '../../Styles'
 
-const RoomCode = ({room, scale, guruImage, dominantColor, recessiveColor}) =>  {
+const RoomCode = ({room, scale, guruImage, darkTheme, dominantColor, recessiveColor, colors}) =>  {
+
+
+  
   return (
       
         <View style={styles.innerContainer}>
       <Animated.View style={[styles.container]}>   
       <React.Fragment>
-        <Text style={[gs.subtitle, {color:dominantColor || "#ffffff"}]}>On your phone, go to</Text>
-        <Text style={[gs.title, gs.bold, gs.spaceBelow]}>Trending.Guru</Text>
+        <Text style={[gs.subtitle, {color:darkTheme ? '#000' : "#fff"}]}>On your phone, go to</Text>
+        <AnimatedText text="Trending.Guru" delay={2000} colors={colors} isAnimated style={[gs.title, gs.bold, gs.spaceBelow, {fontWeight:'800',color:darkTheme ? '#000' : "#fff"}]}/>
         
-        <Text style={[gs.subtitle, gs.spaceAbove, {color:dominantColor || "#ffffff"}]}>Enter room code:</Text>
-        <Text style={[gs.title,  gs.bold]}>{room}</Text>
+        <Text style={[gs.subtitle, gs.spaceAbove, {color:darkTheme ? '#000' : "#fff"}]}>Enter room code:</Text>
+        <AnimatedText text={room} colors={colors} style={[gs.title, gs.bold, gs.spaceBelow, {fontWeight:'800',color:darkTheme ? '#000' : "#fff"}]}/>
         </React.Fragment>
       </Animated.View>
         </View>

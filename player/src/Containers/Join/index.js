@@ -32,18 +32,44 @@ const Join = (props) => {
 	// }
 	
 	const onJoin = () => {
-		state.joinRoom({
-			name: name.slice(0,12),
-			room
-		})
+		if (name.length< 1){
+			state.setPopup({
+		     title: 'Huh?',
+		       subtitle: "You must have a name!",
+		       actions: [
+		         {
+		           label: 'Ok',
+		           action: () => state.setPopup(false),
+		         }
+		       ]
+		   })
+		} else if (room.length !== 4){
+			state.setPopup({
+		     title: 'Doh!',
+		       subtitle: "Enter the 4 digit room code",
+		       actions: [
+		         {
+		           label: 'Ok',
+		           action: () => state.setPopup(false),
+		         }
+		       ]
+		   })
+		} else {
+
+
+			state.joinRoom({
+				name: name.slice(0,12),
+				room
+			})
+		}
 		  
 	}	
 	return (
 		<div className="joinContainer">
 			<Header label="Join game" backgroundColor={state.backgroundColor } />
 			<AnimateIn>
-			<TextInput value={name} placeholder={"Name"} onChange={(e) => setName(e.target.value)}/>
-			<TextInput value={room} placeholder={"Room"} onChange={(e) => setRoom(e.target.value.toUpperCase())}/>
+			<TextInput value={name} limit={10}placeholder={"Your name"} onChange={(e) => setName(e.target.value)}/>
+			<TextInput value={room} limit={4} hiddenLimit placeholder={"4 letter room code"} onChange={(e) => setRoom(e.target.value.toUpperCase())}/>
 			<Button label="Play" onClick={onJoin} />
 			</AnimateIn>
 		</div>

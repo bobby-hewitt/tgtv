@@ -88,6 +88,17 @@ function getScript(key, params){
 			`...Boom!...  ${params.player} got a bulls eye! `,
 			// `...And... bang on the money....  ${params.player} got a bullseye! `
 		],
+		'search-first-round':[
+			`We've got our questions... Let's get this game started!`,
+			`Ok... We're all set... Time to get your brains ticking.... Let's go.`,
+			`There are some good questions in there. Now it's time to work out what people actually search for.`,
+		],
+		'search-next-round':[
+			`Let's move on...`,
+			`Time for the next question`,
+			`OK.... Next round.`,
+			`That's enough of that one.... On to the next`
+		],
 		'songs-playlist':[
 			`Round ${params.round}...... .. ${params.name}.... ${params.player ? 'Chosen by ' + params.player : ''}............. Starting in 3........... 2...........1........... `,
 			`Round ${params.round}...... .. ${params.player ? 'Chosen by ' + params.player : ''}.......... ${params.name}.... Starting in 3........... 2...........1........... `

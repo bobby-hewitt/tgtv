@@ -4,7 +4,7 @@ import {
 	Easing
 } from 'react-native'
 
-const Scale = ({scaleTo, center, scaleFrom, duration, absolute, delay, transformOrigin, children, animationComplete, fillContainer}) => {
+const Scale = ({scaleTo, center, scaleFrom, duration, absolute, relative, delay, transformOrigin, children, animationComplete, fillContainer}) => {
 	const scale = useRef(new Animated.Value(scaleFrom || 0)).current
 	useEffect(() => {
 		function getOptions(){
@@ -45,7 +45,7 @@ const Scale = ({scaleTo, center, scaleFrom, duration, absolute, delay, transform
 	}, [scaleTo])	
 
 	return (
-		<Animated.View style={[{transformOrigin: transformOrigin ? transformOrigin : 'center'}, absolute ? {position:'absolute', top:0,left:0} : {}, fillContainer ?  {flex:1, transform:[{scale}]} :  {transform:[{scale}]}, center ?{alignItems:'center', justifyContent:'center'} : {}]}>
+		<Animated.View style={[{transformOrigin: transformOrigin ? transformOrigin : 'center'}, absolute ? {position:'absolute', top:0,left:0} : {}, fillContainer ?  {flex:1, transform:[{scale}]} :  {transform:[{scale}]}, center ?{alignItems:'center', justifyContent:'center'} : {}, relative ? {position:'relative'} : {}]}>
 			{children}
 		</Animated.View>
 	)

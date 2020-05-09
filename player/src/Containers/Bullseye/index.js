@@ -1,11 +1,15 @@
-import React from 'react'
+import React, {useContext} from 'react'
 import './style.scss'
+import {Header } from 'Components'
+import globalContext from 'Contexts/global'
 
 const Bullseye = () => {
+	const state = useContext(globalContext)
 	return(
 		<div className="bullseyeContainer">
-		You got a bullseye!
-		No need to vote. 
+		<Header label="Bullseye!" backgroundColor={state.backgroundColor } />
+		<p>You got a bullseye!</p>
+		<p>No need to vote. </p>
 		</div>
 	)
 }

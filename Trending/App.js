@@ -23,10 +23,14 @@ const App = () => {
   const [ backgroundPosition, setBackgroundPosition] = useState('right')
   const [ backgroundSpin, setBackgroundSpin] = useState(0)
   const [ activeGame, setActiveGame] = useState(false)
+  const [activeIndex, setActiveIndex] = useState(0) 
+
   return (
     <Provider
       value={{
         // socket,
+        activeIndex,
+        setActiveIndex,
         backgroundColor,
         setBackgroundColor,
         backgroundPosition,

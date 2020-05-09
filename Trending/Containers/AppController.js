@@ -23,25 +23,11 @@ import SongSocket from './Song/SongSocket'
 import MovieGameController from './Movie/MovieGameController'
 import LandingPage from './LandingPage'
 import globalContext from '../Context/global'
+import games from '../Data/games'
 
 import { playBackgroundMusic, stopRemoteSound, stopBackgroundMusic, loadSounds } from '../Helpers/Sound'
 Lint()
-const actions = [
-  {
-    "label": "Goggling",
-    backgroundColor: '#173f5f'
-  },
-  {
-    "label": "Giff show",
-    backgroundColor: '#040125'
-  },
 
-  {
-    "label": "Rocking it",
-    backgroundColor: '#1DB954'
-
-  }
-]
 
 
  TVMenuControl.enableTVMenuKey()
@@ -103,8 +89,8 @@ const AppController = () =>  {
 
 
   return (
-    <View style={[styles.container, {backgroundColor: globalState.backgroundColor}]}> 
-    <Background color={globalState.backgroundColor} backgroundPosition={globalState.backgroundPosition}activeGame={globalState.activeGame}/>
+    <View style={[styles.container]}> 
+    <Background games={games}color={globalState.backgroundColor} backgroundPosition={globalState.backgroundPosition}activeGame={globalState.activeGame}/>
      <SafeAreaView style={{position:'relative'}}>
         <LandingPage />
         {globalState.activeGame === 'search' &&

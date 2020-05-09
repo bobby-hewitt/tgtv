@@ -10,13 +10,13 @@ import Translate from './Translate'
 import Scale from './Scale'
 import gs from '../../Styles'
 
-const PlayerJoin = ({name, index, isRequired, backgroundColor, color, responses}) => {
+const PlayerJoin = ({name, index, isRequired, backgroundColor, color, responses, darkTheme}) => {
 	const response = responses && responses.find((p) => p.player.name === name)
 	const isInverse= ((response) || (!responses && name))
 	return (
 		<View style={styles.playerOuterContainer}>
-			<View style={[styles.player, styles.placeholder]}>
-				<Text style={[gs.bodycopy, gs.bold]}>{'Player ' + (index + 1)}<Text style={styles.isRequired}>{ isRequired ? ' (required)': ''}</Text></Text>
+			<View style={[styles.player, styles.placeholder, {borderColor:darkTheme ? '#000' :'#fff'}]}>
+				<Text style={[gs.bodycopy, gs.bold, {color: darkTheme ? '#000' :'#fff'}]}>{'Player ' + (index + 1)}<Text style={[styles.isRequired, {color: darkTheme ? '#000' :'#fff'}]}>{ isRequired ? ' (required)': ''}</Text></Text>
 			</View>
 			{name &&
 
@@ -24,7 +24,7 @@ const PlayerJoin = ({name, index, isRequired, backgroundColor, color, responses}
 				<Translate translateXY={'translateX'}fromVal={-400} easing={'bounce'} toVal={0} duration={500}fillContainer>
 				
 				<View style={[ styles.playerContainer, styles.player, {backgroundColor: color}]}>
-					<Text style={[gs.bodycopy, gs.bold, {color:backgroundColor}]}>{name}</Text>
+					<Text style={[gs.bodycopy, gs.bold, {color: darkTheme ? '#000' :'#fff'}]}>{name}</Text>
 						<View style={styles.playerUnderline} />
 				</View>
 				
@@ -61,7 +61,6 @@ const styles = StyleSheet.create({
 	placeholder:{
 		
 		borderWidth: 5,
-		borderColor:'white',
 		borderStyle:'dashed',
 	},
 	playerContainer:{

@@ -7,19 +7,20 @@ import {
   Text,
 } from 'react-native';
 import gs from '../../Styles'
-import Scale from '../../Components/Global/Scale'
-const SubmitSuggestions = ({questions, limit}) =>  {
+import {Scale, AnimatedText} from '../../Components/Global'
+const SubmitSuggestions = ({questions, limit, colors, darkTheme}) =>  {
 
  
   return (
     <Scale scaleTo={1} fillContainer>
       <View style={[gs.row, {flex:1}]}>
         <View style={[gs.centeredContainer, {flex:1}]}>
-          <Text style={[gs.subtitle, gs.bold]}>Submit your suggestions</Text>
+          <AnimatedText style={[gs.title, gs.bold, {color:darkTheme ? '#000' : '#fff', fontWeight: '800'}]} text="Webheads"isAnimated colors={colors} />
+          <Text style={[gs.subtitle, gs.bold, {color:darkTheme ? '#000' : '#fff',marginTop:0, marginBottom:120}]}>Submit your suggestions</Text>
           <View style={[gs.row] } >
-          <Text style={[gs.title, gs.bold]}>{questions}</Text>
-          <Text style={[gs.title, gs.bold, gs.spacingLeft, gs.spacingRight]}>/</Text>
-          <Text style={[gs.title, gs.bold]}>{limit}</Text>
+          <AnimatedText style={[gs.title, gs.bold, {color:darkTheme ? '#000' : '#fff', fontWeight: '800'}]} text={`${questions} / ${limit}`} colors={colors} />
+          
+          
           </View>
         </View>
       </View>

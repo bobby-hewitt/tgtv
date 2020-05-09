@@ -28,6 +28,7 @@ const triangles = [true,true,true,true,true,true,true,true,true]
 const Background = (props) =>  {
   const globalState = useContext(globalContext)
   const rotationValue = useRef(new Animated.Value(0)).current 
+  const backgroundColorPosition= useRef(new Animated.Value(0)).current 
   const offset = useRef(new Animated.Value(0)).current 
 
   useEffect(() => {
@@ -41,10 +42,6 @@ const Background = (props) =>  {
       }).start()
   },[props.backgroundPosition])
 
-
-
-
-
   useEffect(() => {
     if (props.backgroundPosition === 'center'){
       Animated.timing(rotationValue, {
@@ -56,11 +53,25 @@ const Background = (props) =>  {
     }
   },[globalState.backgroundSpin ])
 
+  useEffect(() => {
+    backgroundColorPosition.stopAnimation()
+
+
+      Animated.timing(backgroundColorPosition, {
+        toValue: globalState.activeIndex ? globalState.activeIndex * -1080 : 0,
+        // toValue: 0,
+        duration: 300 ,
+        useNativeDriver:true,
+        
+      }).start()
+  }, [globalState.activeIndex])
+
   
  const rotation = rotationValue.interpolate({
     inputRange: [-1, 1],
     outputRange: ['-40deg', '40deg']
   })
+ console.log(props.games)
   // useEffect(() => {
   //   console.log(props.activeGame)
   //   // if (props.activeGame){  
@@ -80,16 +91,26 @@ const Background = (props) =>  {
   // },[props.activeGame])
   // style={[styles.outerContainer, {left: offset, right : offset, height:'100%' }]}
   return (
+    <React.Fragment>
+    
     <Animated.View style={[styles.outerContainer, {left: offset, right : offset, height:'100%' }]}>
-    <Animated.View style={[styles.container, {transform: [{rotate: rotation}]}]}>  
-       {triangles.map((item, i) => {
-          return (
-            <View style={[styles.triangle, {transform: [{rotate: `${i * 40}deg`}, {translateY: -750}]}]}key={i} />
+      <Animated.View style={[styles.backgroundColorContainer, {transform:[{translateY: backgroundColorPosition}]}]}>
+        {props.games && props.games.map((game, i) => {
+          return(
+          <View key={i} style={[styles.backgroundColor, {backgroundColor: game.backgroundColor}]} />
           )
-       })}
-    </Animated.View>
+        })}
+      </Animated.View>
+      <Animated.View style={[styles.container, {transform: [{rotate: rotation}]}]}>  
+         {triangles.map((item, i) => {
+            return (
+              <View style={[styles.triangle, {transform: [{rotate: `${i * 40}deg`}, {translateY: -750}]}]}key={i} />
+            )
+         })}
+      </Animated.View>
     {/*<Animated.View style={[styles.overlay, {}]} />*/}
     </Animated.View>  
+    </React.Fragment>
   );
 };
 
@@ -100,6 +121,23 @@ const styles = StyleSheet.create({
     top:0,
     bottom:'-50%',
   },
+  backgroundColorContainer:{
+    
+    position:"absolute",
+    top:0,
+    left:-320,
+    backgroundColor:'blue',
+  
+    width:120,
+    height:1080,
+  },
+  backgroundColor:{
+    height:1080,
+    
+    width:2500,
+    backgroundColor:'green'
+  },
+
   overlay:{
     flex:1,
     position:'absolute',

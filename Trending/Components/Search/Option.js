@@ -8,7 +8,7 @@ import {
 import { Scale } from '../Global'
 import gs from '../../Styles'
 
-const Option = ({answer, i, animationComplete, backgroundColor}) => {
+const Option = ({answer, i, animationComplete, color, backgroundColor}) => {
 	
 	return(
 		
@@ -18,7 +18,7 @@ const Option = ({answer, i, animationComplete, backgroundColor}) => {
 				animationComplete(i)
 			} 
 		}}>
-		<View style={[styles.optionInner]}>
+		<View style={[styles.optionInner, {borderColor: color ? color : '#333'}]}>
 			<Text style={[gs.subtitle, gs.bold, {color:"#101010", textAlign:'center',fontSize:40}]}>{answer}</Text>
 		</View>
 		</Scale>
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
 	    shadowRadius: 20,
 		marginHorizontal:24,
 		marginVertical:30,
-		borderColor:'#333',
+		
 		borderRadius:20,
 		borderWidth:10,
 	}

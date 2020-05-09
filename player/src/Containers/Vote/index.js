@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react'
-import { TextInput, Button, Header } from 'Components'
+import { TextInput, Button, Header, AnimateIn } from 'Components'
 import globalContext from 'Contexts/global'
 import './style.scss'
 
@@ -15,6 +15,7 @@ const TextAnswerInput = (props) => {
 	return (
 		<div className="joinContainer">
 			<Header label="Which one is right?" backgroundColor={state.backgroundColor}/>
+			<AnimateIn>
 			{state.ballot && state.ballot.map((item, i) => {
 				let isAlso = item.also && item.also.find( a => {
 					console.log('also search', a.player.name, state.me.name)
@@ -28,6 +29,7 @@ const TextAnswerInput = (props) => {
 					)
 				} else return <div key={i} /> 
 			})}
+			</AnimateIn>
 		</div>
 	)
     

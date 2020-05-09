@@ -30,7 +30,7 @@ import actions from '../Data/games'
 const LandingPage = () =>  {
   
   const globalState= useContext(globalContext)
-  const [activeIndex, setActiveIndex] = useState(0) 
+  
   const marginTop = useRef(new Animated.Value(0)).current
   const rotateXValue = useRef(new Animated.Value(0)).current
    const rotateZValue = useRef(new Animated.Value(0)).current
@@ -39,7 +39,7 @@ const LandingPage = () =>  {
 
   const onCTAFocus = (action, params) => {
 
-    setActiveIndex(params.index)
+    globalState.setActiveIndex(params.index)
     globalState.setBackgroundColor(params.color)
   }
 
@@ -91,26 +91,26 @@ const LandingPage = () =>  {
   useEffect(() => {
     Animated.sequence([
       Animated.timing(marginTop, {
-        toValue: -activeIndex * 550 ,
+        toValue: -globalState.activeIndex * 550 ,
         useNativeDriver:true,
         
         duration: 400,    
       }),
       Animated.timing(rotateXValue, {
-        toValue: actions[activeIndex].armRotateX ,
+        toValue: actions[globalState.activeIndex].armRotateX ,
         useNativeDriver:true,
         easing: Easing.bounce,
         duration: 1000,    
       }),
       // Animated.timing(rotateZValue, {
-      //   toValue: actions[activeIndex].armRotateZ ,
+      //   toValue: actions[globalState.activeIndex].armRotateZ ,
       //   useNativeDriver:true,
       //   easing: Easing.elastic(-1),
       //   duration: 400,    
       // }),
 
     ]).start();
-  }, [activeIndex]);
+  }, [globalState.activeIndex]);
 
   const rotateX = rotateXValue.interpolate({
     inputRange: [0, 1],
@@ -161,19 +161,19 @@ const LandingPage = () =>  {
               </Animated.View>
               <View style={styles.overlay} />
               </View>
-              <Animated.Image source={require('../assets/images/home/arm.png')} style={[styles.armImage, {transform: [{rotateX},{rotateZ: rotateZ}]}]} />
+              <Animated.Image source={require('../assets/images/home/arm.png')} style={[styles.armImage, {transform: [{rotateX:'0deg'},{rotateZ: '0deg'}]}]} />
             <Image source={require('../assets/images/home/guru.png')} style={styles.guruImage} />
             <View style={styles.magnifyingGlass} >
-            <Scale fillContainer duration={actions[activeIndex].value === 'search' ? 600 : 100} scaleFrom={0.5} scaleTo={actions[activeIndex].value === 'search' ? 1 : 0}>
+            {/*<Scale fillContainer duration={actions[globalState.activeIndex].value === 'search' ? 600 : 100} scaleFrom={0.5} scaleTo={actions[globalState.activeIndex].value === 'search' ? 1 : 0}>
               <Image source={require('../assets/images/home/magnifyingGlass3.png')} />
-            </Scale>
+            </Scale>*/}
            
 
             </View>
             </Screen> 
            </View>
            <View style={styles.overview}>
-          <Text style={[gs.bodycopy, {textAlign:'left'}]}>{actions[activeIndex].description} <Text style={[gs.bodycopy, gs.bold, {textAlign:'left'}]}>{actions[activeIndex].players} players</Text></Text>
+          <Text style={[gs.bodycopy, {textAlign:'left'}]}>{actions[globalState.activeIndex].description} <Text style={[gs.bodycopy, gs.bold, {textAlign:'left'}]}>{actions[globalState.activeIndex].players} players</Text></Text>
           
            </View>
           

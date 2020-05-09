@@ -11,12 +11,12 @@ import PlayerJoin from './PlayerJoin'
 import gs from '../../Styles'
 
 
-const Players = ({players, responses, maxPlayers, colors, minPlayers, backgroundColor, scale}) => {
+const Players = ({players, responses, darkTheme, maxPlayers, colors, minPlayers, backgroundColor, scale}) => {
 	const createInputs = () => {
 	    let arr = []
 	    for (let i = 0; i < maxPlayers; i++) {
 	      arr.push(
-	      	<PlayerJoin key={i} responses={responses} color={colors[i%colors.length]} {...players[i]} key={i} index={i} backgroundColor={backgroundColor}isRequired={i < minPlayers}/>
+	      	<PlayerJoin darkTheme={darkTheme} key={i} responses={responses} color={colors ? colors[i%colors.length]: darkTheme ? '#000' :'#fff'} {...players[i]} key={i} index={i} backgroundColor={backgroundColor}isRequired={i < minPlayers}/>
 	      )
 	    }
 	    return(

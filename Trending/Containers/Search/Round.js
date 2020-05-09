@@ -7,12 +7,12 @@ import {
 	Text
 } from 'react-native'
 import {Reveal} from '../../Components/Search'
-import { Players, Timer, PlayerResponses,Options, Scale } from '../../Components/Global'
+import { Players, AnimatedText, Timer, PlayerResponses,Options, Scale } from '../../Components/Global'
 import gs from '../../Styles'
 
 
 
-const Round = ({question, players, answerTimeout, timer, questions, round, voteTimeout, backgroundColor, config, sendAnswerInput, onRevealComplete, sendVote, gameState}) => {
+const Round = ({question, players, colors,answerTimeout, timer, questions, round, voteTimeout, backgroundColor, config, sendAnswerInput, onRevealComplete, sendVote, gameState}) => {
 	const [ roundIsVisible, setRoundIsVisible ] = useState(true)
 	const questionTranslate = useRef(new Animated.Value(285)).current
 	useEffect(() => {
@@ -40,15 +40,16 @@ const Round = ({question, players, answerTimeout, timer, questions, round, voteT
 			
 			<View style={[gs.centeredContainer, {flex:1}]}>
 				<Animated.View style={[styles.innerContainer, {transform:[{translateY:questionTranslate}, {scale:1}]}]}>
+				<AnimatedText style={[gs.title, gs.bold, {fontWeight: '800'}]} text="Webheads"isAnimated colors={colors} />
 					<Text style={[gs.subtitle, gs.bold,  {textAlign:'center'}]}>{question.q}</Text>
-					<Text style={[gs.subtitle, gs.bold,  {textAlign:'center',padding:0,marginTop:-30}]}>...</Text>
+					
 				 </Animated.View>
 				 <View style={[styles.answersContainer]}>
 				 	{question.votes.length < players.length && gameState === 'votes' &&
-					 	<Options backgroundColor={backgroundColor} sendVote={sendVote} responses={question.responses.length >= players.length ? question.responses : []} />
+					 	<Options colors={colors} backgroundColor={backgroundColor} sendVote={sendVote} responses={question.responses.length >= players.length ? question.responses : []} />
 					}
 					{question.votes.length >= players.length &&
-						<Reveal {...question} players={players} onComplete={scaleBack}/>
+						<Reveal round={round} colors={colors} {...question} players={players} onComplete={scaleBack}/>
 					}
 				</View>
 			</View>
@@ -60,7 +61,7 @@ const Round = ({question, players, answerTimeout, timer, questions, round, voteT
 
 
 
-const Rounds = ({question, players, answerTimeout, timer, questions, round, voteTimeout, backgroundColor, config, sendAnswerInput, onRevealComplete, sendVote, gameState}) => {
+const Rounds = ({question, players, colors, answerTimeout, timer, questions, round, voteTimeout, backgroundColor, config, sendAnswerInput, onRevealComplete, sendVote, gameState}) => {
 	function answerTimerComplete(){
 		answerTimeout()
 	}
@@ -79,7 +80,7 @@ const Rounds = ({question, players, answerTimeout, timer, questions, round, vote
 		{questions && questions.map((item, i) => {
 			if ( i === round ){
 				return(
-					<Round  key={i} {...{question, players, answerTimeout, timer, questions, round, voteTimeout, backgroundColor, config, sendAnswerInput, onRevealComplete, sendVote, gameState}} />
+					<Round  key={i} {...{colors, question, players, answerTimeout, timer, questions, round, voteTimeout, backgroundColor, config, sendAnswerInput, onRevealComplete, sendVote, gameState}} />
 				)
 			} else return <View key={i} />
 		})}

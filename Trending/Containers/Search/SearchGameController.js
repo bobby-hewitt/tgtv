@@ -208,10 +208,15 @@ const SearchGameController = (props) =>  {
     if (newQuestions.length >= config.maxSuggestions){
       socket.emit('set-room-waiting')
       setGameState('round') 
-      startSpeech('question', {question: questions[round].q, name: questions[round].player.name}, () => {
-        
-        sendAnswerInput()
+
+
+      startSpeech('search-first-round', {}, () => {
+        startSpeech('question', {question: questions[round].q, name: questions[round].player.name}, () => {
+          sendAnswerInput()
+        })
       })
+
+      
     }
   }
 
@@ -407,10 +412,16 @@ function shuffle(a) {
   function calculateWhatIsNext(){
       console.log('NEXT ROUND', round)
       updateScores()
-      if (round === questions.length-1 || round % 2 === 1){   
-        setGameState('scores')
+      if (round === questions.length-1 || round % 2 === 1){ 
+        let key = round === questions.length-1 ? 'final-scores' : 'score-time'
+        startSpeech(key, {}, () => {
+          setGameState('scores')
+        })  
+        
       } else {
+        startSpeech('search-next-round', {}, () => {
           nextRound()
+        })
       }  
   }
 
@@ -440,6 +451,7 @@ function shuffle(a) {
   }
 
   function updateScores(){
+    const multiplier = round < 2 ? 1 : round < 4 ? 2 : 3
     let newPlayers = Object.assign([], players)
     let responses = questions[round].responses
     let votes = questions[round].votes
@@ -452,11 +464,11 @@ function shuffle(a) {
       if (response){
         for (var j = 0; j < votes.length; j++){
           if (votes[j].index === response.index){
-            newPlayers[i].goodLieScore += 100
+            newPlayers[i].goodLieScore += (100 * multiplier)
           }
         }
         if (response.isTrue){
-          newPlayers[i].rightAnswerScore += 500
+          newPlayers[i].rightAnswerScore += (500 * multiplier)
         }
       }
       if (vote){
@@ -465,7 +477,7 @@ function shuffle(a) {
 
         // }
         if (vote.index === correct.index){
-          newPlayers[i].goodGuessScore += 200
+          newPlayers[i].goodGuessScore += (200 * multiplier)
         }
       }
       
@@ -502,10 +514,12 @@ function shuffle(a) {
     }
   }
 
-  function endOfGame(){
-    setGameState('end')
-    toRoom({
-      action:'on-end'
+  function endOfGame(winner){
+    startSpeech('end-of-game', {winner}, () => {
+      setGameState('end')
+      toRoom({
+        action:'on-end'
+      })
     })
   }
 
@@ -530,13 +544,13 @@ function shuffle(a) {
           <RoomCodeIndicator roomCode={room}/>
         } 
         {(gameState === 'join' || gameState === 'instructions') &&
-          <Join colors={["#3caea3", '#f6d55c', '#ed553b']}/>
+          <Join playerColors={['#4b8cf5', '#ea4335','#fbbc05','#4b8cf5','#34a853','#ea4335']} textColors={['#4b8cf5', '#ea4335','#fbbc05','#4b8cf5','#34a853','#ea4335']}/>
         }
         {gameState === 'instructions' &&
           <Instructions onComplete={onInstructionsComplete} />
         }
         {gameState === 'submitSuggestions' &&
-          <SubmitSuggestions questions={questions.length} limit={config.maxSuggestions}/>
+          <SubmitSuggestions colors={['#4b8cf5', '#ea4335','#fbbc05','#4b8cf5','#34a853','#ea4335']}questions={questions.length} limit={config.maxSuggestions} />
         }
         {(gameState === 'scores' || gameState === 'scores-updated' || gameState === 'end') &&
           <Scores 
@@ -553,6 +567,7 @@ function shuffle(a) {
         }
         {(gameState === 'round' || gameState === 'votes' || gameState === 'answers') &&
            <Round
+            colors={['#4b8cf5', '#ea4335','#fbbc05','#4b8cf5','#34a853','#ea4335']}
             questions={questions}
             round={round}
             timer={timer}

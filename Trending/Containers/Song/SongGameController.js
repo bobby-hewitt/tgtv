@@ -21,7 +21,7 @@ import { Players, RoomCode, RoomCodeIndicator } from '../../Components/Global'
 
 import globalContext from '../../Context/global'
 import Round from './Round'
-const colors = [ "#f6d55c","#3caea3", "#3caea3","#f6d55c",]
+const colors = [ "#f6d55c","#3caea3"]
 const config = {
   maxPlayers: 6,
   minPlayers: 1,
@@ -374,7 +374,7 @@ const SongGameController = ({socket, stopBackgroundMusic}) =>  {
           
       
         {(gameState === 'join' || gameState === 'instructions') &&
-          <Join colors={colors} dominantColor="#ffffff" recessiveColor="#3caea3"/>
+          <Join playerColors={colors} dominantColor="#ffffff" recessiveColor="#3caea3"/>
         }
     
         {gameState === 'instructions' &&

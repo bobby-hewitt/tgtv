@@ -2,8 +2,8 @@ const actions = [
 {
     "label": "Webheads",
     // backgroundColor: '#1DB954',
-    backgroundColor: '#4b8cf5',
     backgroundColor: '#040125',
+    // backgroundColor: '#040125',
 
     // backgroundColor: '#04011f',
     guruColor: 'green',
@@ -21,7 +21,7 @@ const actions = [
     
     // backgroundColor: '#04011f',
     backgroundColor:'#2e3047',
-    backgroundColor: '#040125',
+    // backgroundColor: '#040125',
 
     guruColor: 'blue',
     value:'song',

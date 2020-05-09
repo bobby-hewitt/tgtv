@@ -10,7 +10,7 @@ import { SearchOption } from '../Search'
 import gs from '../../Styles'
 
 
-const Options = ({responses, backgroundColor, sendVote}) => {
+const Options = ({responses, colors, backgroundColor, sendVote}) => {
 
 	// console.log('optoins', responses)
 	const [ showResponses, setShowResponses ] = useState(false)
@@ -29,7 +29,7 @@ const Options = ({responses, backgroundColor, sendVote}) => {
 		<View style={[gs.centeredContainer,  gs.row,{flex:1,flexWrap:'wrap', flexDirection: 'row',alignItems:'flex-start', justifyContent:'center'}]}>
 			{showResponses && responses.map((item, i) => {
 				return(
-					<SearchOption animationComplete={responseShown}backgroundColor={0} key={i} {...item} i={i} />
+					<SearchOption color={colors ? colors[i % colors.length] : false}animationComplete={responseShown}backgroundColor={0} key={i} {...item} i={i} />
 				)
 			})}
 		</View>

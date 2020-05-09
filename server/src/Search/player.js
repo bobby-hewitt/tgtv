@@ -49,7 +49,7 @@ exports.submitSuggestion = (socket, data) => {
 			console.log('in cleaning')
 			if (r.indexOf(q.trim()) > -1){
 				console.log('in the same')
-				r= r.replace(q.trim(), '')
+				r= r.replace(q.trim(), '').trim()
 				if (r && r.length){
 					newResponses.push(r)
 				}
