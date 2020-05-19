@@ -11,7 +11,7 @@ import gs from '../../Styles'
 
 const Presentation = ({players, backgroundColor, presentationIndex, presentationKey}) =>  {
   const player = players[presentationIndex]
-  const cast = players.find(p => player && player.cast.name === p.name)
+  const cast = players.find(p => player && player.cast && player.cast.name === p.name)
   return (
     
     <View style={[gs.row, gs.centeredContainer, styles.container]}>

@@ -9,6 +9,7 @@ export { default as PlayerResponses } from './PlayerResponses'
 export { default as Options } from './Options'
 export { default as Scale } from './Scale'
 export { default as AnimatedText } from './AnimatedText'
+export { default as Confetti } from './Confetti'
 export { default as Translate } from './Translate'
 export { default as ScoresPlayer } from './ScoresPlayer'
 

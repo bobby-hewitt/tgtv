@@ -13,8 +13,10 @@ const StoryBoard = ({onStoryboardTimeout}) =>  {
 
  
   return (
+    <View>
+    <Timer onComplete={onStoryboardTimeout} duration={90}/>
     <Scale scaleTo={1} fillContainer>
-      <Timer onComplete={onStoryboardTimeout} duration={10}/>
+      
       <View style={[gs.row, {flex:1}]}>
         <View style={[gs.centeredContainer, {flex:1}]}>
           <Text style={[gs.subtitle, gs.bold]}>Time to storyboard your movie.</Text>
@@ -23,6 +25,7 @@ const StoryBoard = ({onStoryboardTimeout}) =>  {
         </View>
       
     </Scale>
+    </View>
   );
 };
 

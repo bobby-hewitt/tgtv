@@ -13,11 +13,11 @@ const AnimatedText = ({text, colors, isAnimated, delay, style}) => {
     const [ isAnimating , setIsAnimating] = useState(false) 
     useEffect(() => {
     	if (!isAnimating && isAnimated){
-    		// animate(0)
+    		animate(0)
     		setIsAnimating(true)
     	}
     	return () => {
-    		setIsAnimating(false)
+    		// setIsAnimating(false)
     		animation.stopAnimation()
     	}
     	
@@ -50,13 +50,13 @@ const AnimatedText = ({text, colors, isAnimated, delay, style}) => {
         	
     	// 	})
     	// ]).start(() => {
-    	// 	// if (isAnimating){
+    	// 	if (isAnimating){
     	// 		setIsAnimating(false)
 	    // 		setAnimatedType( getRandom(types.length -1))
 	    // 		setAnimatedIndex( getRandom(text.length -1))
 
 	    // 		// animate(index < text.length ? index + 1 : 0)
-    	// 	// }
+    	// 	}
     	// })
 
     }

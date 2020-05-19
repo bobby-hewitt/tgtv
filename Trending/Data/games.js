@@ -15,7 +15,7 @@ const actions = [
     players:'2-6'
   },
   {
-    "label": "Playlist playoff",
+    "label": "Track attack",
     // backgroundColor: '#4285F4',
     // backgroundColor: '#04011f',
     

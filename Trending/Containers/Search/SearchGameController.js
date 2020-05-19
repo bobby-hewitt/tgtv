@@ -14,8 +14,9 @@ import {
 } from 'react-native';
 import { Provider } from "../../Context/search";
 import { Join, Instructions, SubmitSuggestions, Scores } from '../../Containers/Global'
-import { Players, RoomCode, RoomCodeIndicator } from '../../Components/Global'
+import { Players, RoomCode, RoomCodeIndicator, Confetti } from '../../Components/Global'
 import Round from './Round'
+import End from './End'
 import globalContext from '../../Context/global'
 import fallbackLies from '../../Data/fallbackLies'
 
@@ -23,7 +24,7 @@ import fallbackLies from '../../Data/fallbackLies'
 const config = {
   maxPlayers: 6,
   minPlayers: 2,
-  maxSuggestions:5,
+  maxSuggestions:3,
 }
 
 
@@ -106,6 +107,7 @@ const SearchGameController = (props) =>  {
     data.score = 0;
     data.roundScore = 0;
     data.goodLieScore = 0;
+    data.ourLieScore = 0;
     data.goodGuessScore = 0;
     data.rightAnswerScore = 0;
 
@@ -473,15 +475,19 @@ function shuffle(a) {
       }
       if (vote){
 
-        // if (questions[round].responses[vote.index].ourLie ){
-
-        // }
+        if (questions[round].responses[vote.index].ourLie ){
+          newPlayers[i].ourLieScore += (-10 * multiplier) 
+        }
         if (vote.index === correct.index){
           newPlayers[i].goodGuessScore += (200 * multiplier)
         }
       }
-      
     }
+    // for (var i = 0; i < responses.length; i++){
+    //   if (responses[i].ourLie){
+
+    //   }
+    // }
     
     setPlayers(newPlayers)
   }
@@ -492,7 +498,9 @@ function shuffle(a) {
       players[i].score += players[i].goodLieScore
       players[i].score += players[i].goodGuessScore
       players[i].score += players[i].rightAnswerScore
+      players[i].score += players[i].ourLieScore
       players[i].goodLieScore = 0;
+      players[i].ourLieScore = 0;
       players[i].goodGuessScore = 0;
       players[i].rightAnswerScore = 0;
     }
@@ -544,7 +552,7 @@ function shuffle(a) {
           <RoomCodeIndicator roomCode={room}/>
         } 
         {(gameState === 'join' || gameState === 'instructions') &&
-          <Join playerColors={['#4b8cf5', '#ea4335','#fbbc05','#4b8cf5','#34a853','#ea4335']} textColors={['#4b8cf5', '#ea4335','#fbbc05','#4b8cf5','#34a853','#ea4335']}/>
+          <Join game="search" playerColors={['#4b8cf5', '#ea4335','#fbbc05','#4b8cf5','#34a853','#ea4335']} textColors={['#4b8cf5', '#ea4335','#fbbc05','#4b8cf5','#34a853','#ea4335']}/>
         }
         {gameState === 'instructions' &&
           <Instructions onComplete={onInstructionsComplete} />
@@ -583,6 +591,14 @@ function shuffle(a) {
           />
         }
       </View>
+      {gameState=== 'end' &&
+        <Confetti />
+      }
+      {gameState=== 'end' &&
+        <End 
+          colors={['#4b8cf5', '#ea4335','#fbbc05','#4b8cf5','#34a853','#ea4335']}
+          questions={questions}/>
+      }
     </Provider>
   );
 };

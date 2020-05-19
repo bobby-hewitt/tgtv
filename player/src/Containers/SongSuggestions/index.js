@@ -62,7 +62,7 @@ const Home = (props) => {
 							
 							const color = colors[i % colors.length]	
 							return(
-								<SongCategory delay={i * 50} setIsLoading={setIsLoading}{...item} index={i} key={i}/>
+								<SongCategory delay={i < 8 ? i * 50 : i * 8} setIsLoading={setIsLoading}{...item} index={i} key={i}/>
 							)
 							
 						})}

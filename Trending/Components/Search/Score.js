@@ -9,13 +9,13 @@ import {
 import { Scale } from '../Global'
 import gs from '../../Styles'
 
-const Score = ({name, title, cast, storyboard, backgroundColor, score}) =>  {
+const Score = ({name, title, cast, storyboard, color, backgroundColor, score}) =>  {
   
   
   return (
     
       <View style={[styles.container]}>
-          <Text style={[gs.bodycopy, gs.bold, {color:'#fff'}]}>+ {score}</Text>    
+          <Text style={[gs.bodycopy, gs.bold, {color:color ? color : '#fff'}]}>+ {score}</Text>    
       </View>
     
     

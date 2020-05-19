@@ -168,14 +168,13 @@ const Scores = ({players, mergeRoundScore, game, isEnd, scoresComplete, backgrou
 		let timeout2;
 		const timeout = setTimeout(( ) => {
 			mergeRoundScore()
-			timeout2 = setTimeout(() => {
-				if (isEnd){
-
-					endOfGame(orderedPlayers[0].name)
-				} else {
+			if (isEnd){
+				endOfGame(orderedPlayers[0].name)
+				} else{
+				timeout2 = setTimeout(() => {						
 					setScale(0)
-				}
-			},3000)
+				},3000)
+			}
 		}, 3000)
 		return () => {
 			clearTimeout(timeout)

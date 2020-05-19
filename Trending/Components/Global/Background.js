@@ -6,6 +6,7 @@ import {
   Dimensions,
   Animated,
   Easing,
+  Image,
 } from 'react-native';
 import globalContext from '../../Context/global'
 
@@ -110,6 +111,7 @@ const Background = (props) =>  {
       </Animated.View>
     {/*<Animated.View style={[styles.overlay, {}]} />*/}
     </Animated.View>  
+    {/*<Image source={require('../../assets/images/shoestring.jpg')} style={styles.image}/>*/}
     </React.Fragment>
   );
 };
@@ -158,6 +160,10 @@ const styles = StyleSheet.create({
     bottom:0,
     right:0,
     flexDirection:'row'
+  },
+  image:{
+    width:1920,
+    height:1080
   },
   triangle:{
     position:'absolute',

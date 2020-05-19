@@ -10,7 +10,7 @@ export const cancelSpeech =() => {
 
 
  export const startSpeech = (key, params, callback) => {
- 	if (callback) return callback()
+ 	// if (callback) return callback()
  	TTS.stop()
  	TTS.removeEventListener('tts-start', start);
 	TTS.removeEventListener('tts-finish', finish);

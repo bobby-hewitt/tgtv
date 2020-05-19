@@ -39,6 +39,7 @@ const SocresPlayer = ({scaleTo, xTo, yTo, player, position, game, backgroundColo
 	return (
 		<Animated.View style={[ styles.outerContainer, {transform:[{translateX:x}, {translateY: y}]}]}>
 		<Animated.View style={[styles.container,{ borderColor:'#000'}, {transform:[{scale}]}]}>
+
 			<View style={[styles.position, {backgroundColor:"#fff", borderColor:'#000'}]}>
 				<Text style={{color:'#000', fontSize:50, fontWeight:'bold'}}>{position}</Text>
 			</View>
@@ -56,11 +57,18 @@ const SocresPlayer = ({scaleTo, xTo, yTo, player, position, game, backgroundColo
 			{gameState === 'scores'  && game === 'search'&&  player.rightAnswerScore !== 0 && 
 				<Text style={[gs.bold, gs.bodycopy, {color:'#000', fontSize:24}]}>Bullseye +{player.rightAnswerScore}</Text>
 			}
+			
 			{gameState === 'scores'  && game === 'song'&&
 				<Text style={[gs.bold, gs.bodycopy, {color:'#000', fontSize:24}]}>+{player.roundScore}</Text>
 			}
 			</View>
+			{gameState === 'scores'  && game === 'search'&&  player.ourLieScore !== 0 && 
+				<View style={[styles.ourLieContainer]}>
+				<Text style={[gs.bold, gs.bodycopy, {color:'#ea4335', fontSize:24}]}>Our lie {player.ourLieScore}</Text>
+				</View>
+			}
 		</Animated.View>
+
 		</Animated.View>
 	)
 }
@@ -96,6 +104,24 @@ const styles = StyleSheet.create({
 				translateX:-50,
 			}
 		]
+	},
+	ourLieContainer:{
+		borderRadius:10,
+		paddingHorizontal:10,
+		position:'absolute',
+		bottom:0,
+		// right:0,
+		transform:[
+			{translateX:10},
+			{translateY:'35'},
+		],
+		alignItems:'center',
+		justifyContent:'center',
+		
+		// borderWidth:10,
+		// borderColor:'#000',
+
+		// backgroundColor:'#fff',
 	},
 	container:{
 

@@ -3,15 +3,19 @@ import {
   StyleSheet,
   View,
   Dimensions,
+  Image,
   Animated,
   Text,
 } from 'react-native';
 import gs from '../../Styles'
 import Context from '../../Context/search'
 import globalContext from '../../Context/global'
-import { Players, RoomCode, Scale} from '../../Components/Global'
+import { Players, RoomCode, Scale, AnimatedText} from '../../Components/Global'
 
-const Join = ({guruImage, textColors, playerColors, standout, dominantColor, recessiveColor, darkTheme}) =>  {
+
+
+
+const Join = ({guruImage, textColors, playerColors, game, standout, dominantColor, recessiveColor, darkTheme}) =>  {
   
   const { players, config, room , gameState } = useContext(Context)
   const { backgroundColor} = useContext(globalContext)
@@ -46,14 +50,15 @@ const Join = ({guruImage, textColors, playerColors, standout, dominantColor, rec
 
       
       <Scale fillContainer center scaleTo={(room !== '----' && gameState === 'join') ? 1 : 0 }>
-      <RoomCode darkTheme={darkTheme}  colors={textColors} dominantColor={dominantColor} recessiveColor={recessiveColor}guruImage={guruImage} room={room} /> 
+      
+      <RoomCode game={game} darkTheme={darkTheme}  colors={textColors} dominantColor={dominantColor} recessiveColor={recessiveColor}guruImage={guruImage} room={room} /> 
       </Scale>
     </React.Fragment>
   );
 };
 
 const styles = StyleSheet.create({
-  
+    
 });
 
 export default Join

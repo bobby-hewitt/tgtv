@@ -10,14 +10,27 @@ import {
 import AnimatedText from './AnimatedText'
 import gs from '../../Styles'
 
-const RoomCode = ({room, scale, guruImage, darkTheme, dominantColor, recessiveColor, colors}) =>  {
+const GameHeader = ({game, colors}) => {
+  return(
+    <View style={styles.gameHeaderContainer}>
+      {game === 'song' && 
+        <Image style={styles.image}source={require('../../assets/images/record.png')} />
+      }
+      
+  
+    </View>
+  )
+}
+
+const RoomCode = ({room, scale, game, guruImage, darkTheme, dominantColor, recessiveColor, colors}) =>  {
 
 
   
   return (
       
         <View style={styles.innerContainer}>
-      <Animated.View style={[styles.container]}>   
+      <Animated.View style={[styles.container]}> 
+      <GameHeader colors={colors} game={game}/>  
       <React.Fragment>
         <Text style={[gs.subtitle, {color:darkTheme ? '#000' : "#fff"}]}>On your phone, go to</Text>
         <AnimatedText text="Trending.Guru" delay={2000} colors={colors} isAnimated style={[gs.title, gs.bold, gs.spaceBelow, {fontWeight:'800',color:darkTheme ? '#000' : "#fff"}]}/>
@@ -62,7 +75,21 @@ const styles = StyleSheet.create({
     fontSize:200,
     color:'#ffffff',
     fontWeight:'bold'
-  }
+  },
+  gameHeaderContainer:{
+      shadowColor: '#fff',
+      shadowOffset: { width: 0, height: 0 },
+      shadowOpacity: 0.5,
+      shadowRadius:50,
+      width:'100%',
+      alignItems:'center',
+      justifyContent:'center'
+    },
+    image:{
+      // marginBottom:-100,
+      width:250,
+      height:250
+    }
 });
 
 export default RoomCode;

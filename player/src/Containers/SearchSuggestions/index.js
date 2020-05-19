@@ -6,7 +6,7 @@ import suggestions from 'Data/searchSuggestions'
 
 const Join = (props) => {
 	const state = useContext(globalContext)
-	const [ suggestion, setSuggestion] = useState('Test')
+	const [ suggestion, setSuggestion] = useState('')
 
 	const onSubmit = () => {
 		state.USERsubmitSearchSuggestion(

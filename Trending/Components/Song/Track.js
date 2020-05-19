@@ -233,7 +233,7 @@ const styles= StyleSheet.create({
 		justifyContent:'center',
 		borderRadius:20,
 		borderWidth:10,
-		borderColor:'#000',
+		borderColor:'#191414',
 		width:'100%',
 		height:'100%',
 		padding:50,

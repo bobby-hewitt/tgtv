@@ -23,7 +23,7 @@ import Cast from './Cast'
 import ChooseTitle from './ChooseTitle'
 import CreateTitles from './CreateTitles'
 
-import { Players, RoomCode, Screen, RoomCodeIndicator } from '../../Components/Global'
+import { Players, RoomCode, Screen, RoomCodeIndicator, Confetti } from '../../Components/Global'
 import { ClapBoard } from '../../Components/Movie'
 import Headshots from './Headshots'
 import Presentation from './Presentation'
@@ -38,7 +38,7 @@ const config = {
 }
 
 const storyboardLimit =3
-
+const colors = ["#ebbb4a", '#f7ee8b', '#d1d2d4']
 
 
 
@@ -149,8 +149,9 @@ const Movie = (props) =>  {
 
   function finishPresentation(){
     //Clapping 
-    setGameState('intermission')
+    setGameState('presentation-complete')
     startSpeech('movie-review', {}, ()=>{
+
       toRoom({
         action: 'send-movie-review',
         player: players[presentationIndex].name
@@ -566,13 +567,13 @@ const Movie = (props) =>  {
           <RoomCodeIndicator roomCode={room}/>
         } 
         {(gameState === 'join' || gameState === 'instructions') &&
-          <Join colors={["#ebbb4a", '#f7ee8b', '#d1d2d4']}/>
+          <Join playerColors={colors}/>
         }
         {gameState === 'instructions' &&
           <Instructions onComplete={onInstructionsComplete} />
         }
         
-        {gameState === 'presentation' &&
+        {(gameState === 'presentation' || gameState === 'presentation-complete')&&
             <Presentation players={players} presentationIndex={presentationIndex} presentationKey={presentationKey} backgroundColor={globalState.backgroundColor}/>
         }
         {gameState === 'show-reviews' &&
@@ -594,11 +595,14 @@ const Movie = (props) =>  {
           <StoryBoard onStoryboardTimeout={onStoryboardTimeout} questions={questions.length} limit={players.length * 3}/>
         }
         {gameState === 'cast' &&
-          <Cast onCastTimeout={onCastTimeout}/>
+          <Cast onCastTimeout={onCastTimeout} />
         }
         
        
       </View>
+      {gameState === 'presentation-complete' && 
+        <Confetti colors={colors}/>
+      }
     </Provider>
   );
 };

@@ -83,6 +83,9 @@ const RevealOption = ({votes, round, responses, index, createPlayersText, colors
 				{responses[index].isTrue && showResultScore && votes && votes.length > 0 &&
 					<Score score={200 * multiplier} backgroundColor={'#000'}/>
 				}
+				{responses[index].ourLie && showResultScore && votes && votes.length > 0 &&
+					<Score score={-10 * multiplier} color={'#ea4335'} backgroundColor={'#000'}/>
+				}
 				</View>
 			}
 			{!showVotes &&

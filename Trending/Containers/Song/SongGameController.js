@@ -17,11 +17,12 @@ import {
 import { Provider } from "../../Context/search";
 import { Join, Instructions, Scores, } from '../../Containers/Global'
 import SubmitSuggestions from './SubmitSuggestions'
-import { Players, RoomCode, RoomCodeIndicator } from '../../Components/Global'
+import End from './End'
+import { Players, RoomCode, RoomCodeIndicator, Confetti } from '../../Components/Global'
 
 import globalContext from '../../Context/global'
 import Round from './Round'
-const colors = [ "#f6d55c","#3caea3"]
+const colors = [ "#1DB954","#191414"]
 const config = {
   maxPlayers: 6,
   minPlayers: 1,
@@ -36,7 +37,6 @@ const SongGameController = ({socket, stopBackgroundMusic}) =>  {
   // const [socket] = useSocket('http://192.168.0.2:9000',{
   //   autoConnect: true, forceNode: true
   // })
-  
   
   const globalState = useContext(globalContext)
   
@@ -374,7 +374,7 @@ const SongGameController = ({socket, stopBackgroundMusic}) =>  {
           
       
         {(gameState === 'join' || gameState === 'instructions') &&
-          <Join playerColors={colors} dominantColor="#ffffff" recessiveColor="#3caea3"/>
+          <Join playerColors={colors} dominantColor="#ffffff" recessiveColor="#3caea3" game="song"/>
         }
     
         {gameState === 'instructions' &&
@@ -399,10 +399,19 @@ const SongGameController = ({socket, stopBackgroundMusic}) =>  {
             players={players}
           />
         }
+        
+         
+        
         {gameState !== 'join' &&
           <RoomCodeIndicator roomCode={room}/>
         } 
       </View>
+        {gameState === 'end' &&
+        <End questions={questions}/>
+        }
+         {gameState=== 'end' &&
+        <Confetti />
+      }
     </Provider>
   );
 };

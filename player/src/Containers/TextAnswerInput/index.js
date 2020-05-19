@@ -5,7 +5,7 @@ import './style.scss'
 
 const TextAnswerInput = (props) => {
 	const state = useContext(globalContext)
-	const [ answer, setAnswer] = useState('Get with a really really long answer')
+	const [ answer, setAnswer] = useState('')
 
 	const onSubmitAnswer = () => {
 		state.setWaiting()

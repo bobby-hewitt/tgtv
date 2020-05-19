@@ -12,8 +12,10 @@ const Cast = ({onCastTimeout}) =>  {
 
  
   return (
+    <View>
+    <Timer onComplete={onCastTimeout} duration={45}/>
     <Scale scaleTo={1} fillContainer>
-      <Timer onComplete={onCastTimeout} duration={5}/>
+      
 
       <View style={[gs.row, {flex:1}]}>
         <View style={[gs.centeredContainer, {flex:1}]}>
@@ -23,6 +25,7 @@ const Cast = ({onCastTimeout}) =>  {
         </View>
       
     </Scale>
+    </View>
   );
 };
 
